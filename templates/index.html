@@ -1,6 +1,10 @@
 {% extends "base.html" %}
+
 {% block content %}
 
+{% if current_user.is_authenticated() %}
+
+Welcome, {{ current_user.name }} | <a href="{{ url_for('logout') }}">log out</a>
 <h2>== 待办 ==</h2>
 {% if todo %}
     <ol>
@@ -35,4 +39,10 @@
 <button type="submit">更新</button>
 </form>
 
-{% endblock %}
+{% else %}
+
+You are not logged in | <a href="{{ url_for('login') }}">log in</a>
+
+{% endif %}
+
+{% endblock content %}
