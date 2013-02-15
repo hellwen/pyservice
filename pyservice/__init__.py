@@ -29,6 +29,7 @@ from pyservice.helpers import render_template
 DEFAULT_APP_NAME = 'pyservice'
 
 DEFAULT_MODULES = (
+    (views.frontend, ""),
     (views.account, "/account"),
     (views.footer, "/footer"),
 )

@@ -20,7 +20,9 @@ from flask import Module, Response, request, flash, jsonify, g, current_app,\
 
 from flaskext.babel import gettext as _
 from flask.ext.principal import identity_changed, Identity, AnonymousIdentity
-
+from flask.ext.login import (LoginManager, current_user, login_required,                                                                                                                                
+                             login_user, logout_user, UserMixin,
+                             confirm_login, fresh_login_required)
 
 from pyservice.helpers import render_template, cached
 from pyservice.permissions import auth, admin 
@@ -31,7 +33,6 @@ from pyservice.forms import LoginForm, SignupForm
 
 account = Module(__name__)
 
-@account.route("/", methods=("GET","POST"))
 @account.route("/login/", methods=("GET","POST"))
 def login():
 
@@ -39,19 +40,17 @@ def login():
                      next=request.args.get('next',None))
 
     if form.validate_on_submit():
-
         user, authenticated = User.query.authenticate(form.login.data,
                                                       form.password.data)
 
-        if user and authenticated:
-            session.permanent = form.remember.data
+        if user and authenticated and login_user(user, remember=form.remember.data):
+            # session.permanent = form.remember.data
             identity_changed.send(current_app._get_current_object(),
                                   identity=Identity(user.id))
 
             flash(_("Welcome back, %(name)s", name=user.username), "success")
 
             next_url = form.next.data
-
             if not next_url or next_url == request.path:
                 next_url = url_for('frontend.people', username=user.username)
 
@@ -60,6 +59,7 @@ def login():
             flash(_("Sorry, invalid login"), "error")
 
     return render_template("account/login.html", form=form)
+
     
 @account.route("/signup/", methods=("GET","POST"))
 def signup():
@@ -97,7 +97,7 @@ def signup():
     
 @account.route("/logout/")
 def logout():
-
+    logout_user()
     flash(_("You are now logged out"), "success")
     identity_changed.send(current_app._get_current_object(),
                           identity=AnonymousIdentity())
