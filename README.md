@@ -22,9 +22,14 @@
 	python manage.py runserver
 
 ##Example
-###Create Users
+
+###Create User
 
 Admin:
+
+	python manage.py createadmin
+
+###Generate Admin active code
 
 	python manage.py createcode -r admin
 
