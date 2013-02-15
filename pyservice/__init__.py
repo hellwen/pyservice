@@ -30,6 +30,7 @@ DEFAULT_APP_NAME = 'pyservice'
 
 DEFAULT_MODULES = (
     (views.account, "/account"),
+    (views.footer, "/footer"),
 )
 
 def create_app(config=None, modules=None):

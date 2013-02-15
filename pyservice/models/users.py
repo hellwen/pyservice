@@ -106,6 +106,12 @@ class User(db.Model):
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
 
+    def __init__(self, username, nickname, email, role):
+        self.username = username
+        self.nickname = nickname
+        self.email = email
+        self.role = role
+
     def __str__(self):
         return self.nickname
     
@@ -152,43 +158,7 @@ class User(db.Model):
     def is_admin(self):
         return self.role >= self.ADMIN
 
-    @cached_property
-    def twitter_api(self):
-        if self.twitter and self.twitter.token \
-                        and self.twitter.token_secret:
-            api = twitter.Api(current_app.config['TWITTER_KEY'], 
-                              current_app.config['TWITTER_SECRET'],
-                              self.twitter.token,
-                              self.twitter.token_secret)
-        else:
-            api = None
-
-        return api
-
-    @cached_property
-    def tweets(self):
-        api = self.twitter_api
-        if api:
-            info = api.VerifyCredentials()
-            try:
-                tweets = api.GetUserTimeline(screen_name=info.screen_name, count=self.TWEET_PER_PAGE)
-            except:
-                return []
-        else:
-            return []
-        return tweets
-
-    def post_twitter(self, content):
-        
-        api = self.twitter_api
-        if api:
-            status = api.PostUpdate(content)
-        else:
-            return False
-    
-        return True
-
-
+# Is active code
 class UserCode(db.Model):
 
     __tablename__ = 'usercode'

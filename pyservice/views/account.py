@@ -21,6 +21,7 @@ from flask import Module, Response, request, flash, jsonify, g, current_app,\
 from flaskext.babel import gettext as _
 from flask.ext.principal import identity_changed, Identity, AnonymousIdentity
 
+
 from pyservice.helpers import render_template, cached
 from pyservice.permissions import auth, admin 
 from pyservice.extensions import db
@@ -33,7 +34,7 @@ account = Module(__name__)
 @account.route("/", methods=("GET","POST"))
 @account.route("/login/", methods=("GET","POST"))
 def login():
-    
+
     form = LoginForm(login=request.args.get('login',None),
                      next=request.args.get('next',None))
 
@@ -44,7 +45,6 @@ def login():
 
         if user and authenticated:
             session.permanent = form.remember.data
-            
             identity_changed.send(current_app._get_current_object(),
                                   identity=Identity(user.id))
 
@@ -56,13 +56,10 @@ def login():
                 next_url = url_for('frontend.people', username=user.username)
 
             return redirect(next_url)
-
         else:
-
             flash(_("Sorry, invalid login"), "error")
 
     return render_template("account/login.html", form=form)
-
     
 @account.route("/signup/", methods=("GET","POST"))
 def signup():

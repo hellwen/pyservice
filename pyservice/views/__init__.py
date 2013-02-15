@@ -1,1 +1,1 @@
-#!/usr/bin/env pythonfrom .account import account
+#!/usr/bin/env pythonfrom .account import accountfrom .footer import footer

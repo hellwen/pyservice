@@ -30,6 +30,14 @@ def dropall():
     if prompt_bool("Are you sure ? You will lose all your data !"):
         db.drop_all()
 
+@manager.command
+def createadmin():
+    "Create admin and password is admin"
+    admin = User("admin", "admin", "admin@example.com", User.ADMIN)
+    admin.password = "admin"
+    db.session.add(admin)
+    db.session.commit()
+
 @manager.option('-r', '--role', dest='role', default="member")
 @manager.option('-n', '--number', dest='number', default=1, type=int)
 def createcode(role, number):
