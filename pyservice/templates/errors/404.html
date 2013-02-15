@@ -1,0 +1,15 @@
+{% extends theme("layout.html") %}
+
+{% block content %}
+<div class="error">
+    <h1>{{ _("404, Page Not Found") }}</h1>
+    <blockquote>
+        <p>The requested page,</p>
+        <p>cannot be found —  </p>
+        <p>We're sorry.</p>
+    </blockquote>
+    <div class="simple">
+        <p>{{ _("Maybe you can try search:") }}</p>
+    </div>
+</div>
+{% endblock %}

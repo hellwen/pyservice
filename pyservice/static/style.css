@@ -1,0 +1,85 @@
+body { background: #fefefe; color: #343434; margin: 1em; padding: 0; font-size:105%;}
+img { border: none }
+#content a {
+  color: #185DA0;
+  background: inherit;
+}
+
+#content a:hover {
+  color: #9EC068;
+  background: inherit;
+}
+
+#content h2 a {
+  text-decoration: none;
+}
+   
+.page {
+    margin: 2em auto; width: 70em; border: 3px dashed #ccc;
+    padding: 1em; background: white;
+}
+   
+#content hr {
+  width : 100%;
+  height : 2px;
+  background : #efefef;
+  border : 1px solid #ddd;
+  clear : both;
+}
+
+#content div#poweredby {
+  float : right;
+  font-size: 0.8em;
+}
+
+#content li {
+  font-size:120%;
+  margin-left: 2em;
+  border-bottom:1px dotted #aaa;
+  width:90%;
+  padding-top: 10px;
+}
+
+#content del {font-size:95%; color:#555;}
+#content sub,sup {font-size:10px;}
+
+#content input{
+  font-size:18px;line-height:22px;height:26px;
+  padding:1px 3px;
+  border:1px solid #ddd;
+  /*width:37em;*/
+}
+
+#content button {
+  font-weight:normal;color:#444;
+  font-size:16px;line-height:22px;height:28px;
+  text-decoration:center;
+  width:100px;overflow:visible;
+  margin:0;
+  padding:1px 3px;
+  background-color:#feeefe;
+  border:1px solid #ddd;
+  cursor:pointer;
+}
+
+#content button:hover {
+  background-color:#fff;border:1px solid #aaa;color:#000
+  -moz-box-shadow:-2px 2px 2px #ccc;
+  box-shadow:-2px 2px 2px #ccc;
+  -webkit-box-shadow:-2px 2px 2px #ccc;
+}
+
+.flash {
+  background: #fff; padding: 0.5em;
+  border: 1px solid #ccc; 
+}
+
+#system_menu a { color: #000; text-decoration: none; }
+#system_menu a:hover { color: #F00; }
+#system_menu { width:500px; height:28px; margin:0 auto; border-bottom:3px solid #E10001;}
+#system_menu ul { list-style: none; margin: 0px; padding: 0px; }
+#system_menu ul li { float:left; margin-left:2px;}
+#system_menu ul li a { display:block; width:87px; height:28px; line-height:28px; text-align:center; font-size:14px;}
+
+#function_menu { background: #99FF99; height: 300px; width: 120px; float: left; }
+#content { background: #99FFFF; height: 300px; width: 70%; margin-left: 120px; }

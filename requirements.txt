@@ -1,0 +1,10 @@
+Flask
+Flask-Cache
+Flask-SQLAlchemy
+Flask-Principal
+Flask-WTF
+Flask-Mail
+Flask-Script
+Flask-Babel
+Flask-Themes
+Flask-Uploads
