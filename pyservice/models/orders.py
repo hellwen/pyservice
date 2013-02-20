@@ -16,12 +16,11 @@ from flask import abort, current_app
 
 from flask.ext.sqlalchemy import BaseQuery
 from flask.ext.principal import RoleNeed, UserNeed, Permission
-from flask.ext.login import UserMixin
 
 from pyservice.extensions import db, cache
 from pyservice.permissions import admin
 
-class UserQuery(BaseQuery):
+class OrderQuery(BaseQuery):
 
     def from_identity(self, identity):
         """
@@ -70,14 +69,11 @@ class UserQuery(BaseQuery):
         return user
 
 
-class User(db.Model, UserMixin):
+class Order(db.Model, UserMixin):
 
-    __tablename__ = 'users'
+    __tablename__ = 'orders'
     
-    query_class = UserQuery
-
-    PER_PAGE = 50
-    TWEET_PER_PAGE = 30
+    query_class = OrderQuery
     
     MEMBER = 100
     MODERATOR = 200
@@ -158,21 +154,3 @@ class User(db.Model, UserMixin):
     @property
     def is_admin(self):
         return self.role >= self.ADMIN
-
-# Is active code
-class UserCode(db.Model):
-
-    __tablename__ = 'usercode'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(20), nullable=False)
-    role = db.Column(db.Integer, default=User.MEMBER)
-    
-    def __init__(self, *args, **kwargs):
-        super(UserCode, self).__init__(*args, **kwargs)
-
-    def __str__(self):
-        return self.code
-    
-    def __repr__(self):
-        return "<%s>" % self

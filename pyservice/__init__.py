@@ -16,10 +16,11 @@ from werkzeug import parse_date
 
 from flask import Flask, g, session, request, flash, redirect, jsonify, url_for
 
-from flaskext.babel import Babel, gettext as _
+from flask.ext.babel import Babel, gettext as _
 from flask.ext.themes import setup_themes, load_themes_from
 from flask.ext.principal import Principal, RoleNeed, UserNeed, identity_loaded
 from flask.ext.uploads import configure_uploads
+from flask.ext.login import LoginManager
 
 from pyservice import views, helpers
 from pyservice.models import User
@@ -30,6 +31,8 @@ DEFAULT_APP_NAME = 'pyservice'
 
 DEFAULT_MODULES = (
     (views.frontend, ""),
+    (views.sales, "/sales"),
+    (views.hr, "/hr"),
     (views.account, "/account"),
     (views.footer, "/footer"),
 )
@@ -40,7 +43,7 @@ def create_app(config=None, modules=None):
         modules = DEFAULT_MODULES   
     
     app = Flask(DEFAULT_APP_NAME)
-    
+
     # config
     app.config.from_pyfile(config)
     
@@ -68,6 +71,18 @@ def configure_extensions(app):
     mail.init_app(app)
     cache.init_app(app)
     setup_themes(app)
+
+    # flask-login
+    login_manager = LoginManager()
+    login_manager.setup_app(app)
+    # login_manager.login_view = "login"
+    # login_manager.login_message = u"Please log in to access this page."
+    # login_manager.refresh_view = "reauth"
+    # login_manager.setup_app(app)
+
+    @login_manager.user_loader
+    def load_user(userid):
+        return User.query.filter_by(id=userid).first()   
 
 
 def configure_identity(app):

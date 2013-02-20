@@ -50,11 +50,7 @@ def login():
 
             flash(_("Welcome back, %(name)s", name=user.username), "success")
 
-            next_url = form.next.data
-            if not next_url or next_url == request.path:
-                next_url = url_for('frontend.people', username=user.username)
-
-            return redirect(next_url)
+            return redirect(url_for('frontend.index'))
         else:
             flash(_("Sorry, invalid login"), "error")
 

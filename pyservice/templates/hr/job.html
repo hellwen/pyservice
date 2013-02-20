@@ -1,0 +1,37 @@
+{% extends theme("layout.html") %}
+{% from "macros/_forms.html" import render_errors %}
+
+{%- block sidebar %}
+<div class="sidebar">
+    {% include "hr/_sidebar.html" %}
+</div>
+{%- endblock %}
+
+{%- block content %}
+<div class="content">
+    <div id="Employee">
+        <form method="POST" action=".">
+            {{ form.hidden_tag() }}
+            <table cellspacing="0" class="form-table">
+            <tbody>
+                <tr>
+                    <th>{{ form.job_name.label }}{% if form.job_name.flags.required %}*{% endif %}</th>
+                    <td>{{ form.job_name(size=30) }} {{ render_errors(form.job_name) }}</td>
+
+                    <th>{{ form.department.label }}</th>
+                    <td>{{ form.department }} {{ render_errors(form.department) }}</td>                    
+                </tr>                
+                <tr>
+                    <th>{{ form.description.label }}</th>
+                    <td>{{ form.description(size=30) }} {{ render_errors(form.description) }}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td>{{ form.submit }}</td>
+                </tr>
+            </tbody>
+            </table>            
+        </form>
+    </div>
+</div>
+{%- endblock %}

@@ -1,0 +1,104 @@
+{% extends theme("layout.html") %}
+{% from "macros/_forms.html" import render_errors %}
+{% from "macros/_forms.html" import render_tips %}
+
+{%- block sidebar %}
+<div class="sidebar">
+    {% include "hr/_sidebar.html" %}
+</div>
+{%- endblock %}
+
+{%- block content %}
+<div class="content">
+    <div id="Employee">
+        <form method="POST" action=".">
+            {{ form.hidden_tag() }}
+            <table cellspacing="0" class="form-table">
+            <tbody>
+                <tr>
+                    <th>{{ form.emp_name.label }}{% if form.emp_name.flags.required %}*{% endif %}</th>
+                    <td>{{ form.emp_name(size=30) }} {{ render_errors(form.emp_name) }}</td>
+
+                    <th>{{ form.emp_code.label }}</th>
+                    <td>{{ form.emp_code(size=30) }} {{ render_errors(form.emp_code) }}</td>                    
+                </tr>                
+                <tr>
+                    <th>{{ form.work_addr.label }}</th>
+                    <td>{{ form.work_addr(size=30) }} {{ render_errors(form.work_addr) }}</td>
+
+                    <th>{{ form.department.label }}</th>
+                    <td>{{ form.department }} {{ render_errors(form.department) }}</td>                    
+                </tr>
+                <tr>
+                    <th>{{ form.work_email.label }}</th>
+                    <td>{{ form.work_email(size=30) }} {{ render_errors(form.work_email) }}</td>    
+
+                    <th>{{ form.job.label }}</th>
+                    <td>{{ form.job }} {{ render_errors(form.job) }}</td>                                        
+                </tr>
+                <tr>
+                    <th>{{ form.work_phone.label }}</th>
+                    <td>{{ form.work_phone(size=30) }} {{ render_errors(form.work_phone) }}</td>   
+
+                    <th>{{ form.level.label }}</th>
+                    <td>{{ form.level }} {{ render_errors(form.level) }}</td>                                       
+                </tr>                
+                <tr>
+                    <th>{{ form.work_mobile.label }}</th>
+                    <td>{{ form.work_mobile(size=30) }} {{ render_errors(form.work_mobile) }}</td>   
+
+                    <th>{{ form.manager.label }}</th>
+                    <td>{{ form.manager }} {{ render_errors(form.manager) }}</td>                                       
+                </tr>
+                <tr>
+                    <th>{{ form.office_location.label }}</th>
+                    <td>{{ form.office_location(size=30) }} {{ render_errors(form.office_location) }}</td>    
+
+                    <th>{{ form.is_manager.label }}</th>
+                    <td>{{ form.is_manager }} {{ render_errors(form.is_manager) }}</td>                                      
+                </tr>
+                <tr>
+                    <th>{{ form.related_user.label }}</th>
+                    <td>{{ form.related_user }}</td>     
+                </tr>                    
+                <tr>
+                    <th>{{ form.gender.label }}</th>
+                    <td>{{ form.gender }} {{ render_errors(form.gender) }}</td>
+
+                    <th>{{ form.id_card.label }}</th>
+                    <td>{{ form.id_card(size=30) }} {{ render_errors(form.id_card) }}</td>                    
+                </tr>                
+                <tr>
+                    <th>{{ form.marital.label }}</th>
+                    <td>{{ form.marital }} {{ render_errors(form.marital) }}</td>
+
+                    <th>{{ form.home_addr.label }}</th>
+                    <td>{{ form.home_addr(size=30) }} {{ render_errors(form.home_addr) }}</td>                    
+                </tr>
+                <tr>
+                    <th>{{ form.num_children.label }}</th>
+                    <td>{{ form.num_children(size=30) }} {{ render_errors(form.num_children) }}</td>    
+
+                    <th>{{ form.date_of_birth.label }}</th>
+                    <td>{{ form.date_of_birth(size=30) }}
+                        {{ render_tips(form.date_of_birth) }}
+                        {{ render_errors(form.date_of_birth) }}</td>                                        
+                </tr>
+                <tr>
+                    <th>{{ form.place_of_birth.label }}</th>
+                    <td>{{ form.place_of_birth(size=30) }} {{ render_errors(form.place_of_birth) }}</td>                                       
+                </tr>
+                <tr>
+                    <th>{{ form.remark.label }}</th>
+                    <td>{{ form.remark(size=30) }} {{ render_errors(form.remark) }}</td>                                       
+                </tr>
+                <tr>
+                    <th></th>
+                    <td>{{ form.submit }}</td>
+                </tr>
+            </tbody>
+            </table>            
+        </form>
+    </div>
+</div>
+{%- endblock %}

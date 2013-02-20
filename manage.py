@@ -31,6 +31,14 @@ def dropall():
         db.drop_all()
 
 @manager.command
+def initialize():
+    "Initialize base information"
+
+    if prompt_bool("Are you sure ? You will lose all your data !"):
+        db.drop_all()
+        db.create_all()
+
+@manager.command
 def createadmin():
     "Create admin and password is admin"
     admin = User("admin", "admin", "admin@example.com", User.ADMIN)

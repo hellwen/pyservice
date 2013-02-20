@@ -37,8 +37,9 @@
         <div class="head-inner">
             <div id="nav">
                 <ul>
-                    <li><a href="#">{{ _("Home") }}</a></li>
-                    <li><a href="#">{{ _("Word Order") }}</a></li>
+                    <li><a href="{{ url_for('frontend.index') }}">{{ _("Home") }}</a></li>
+                    <li><a href="{{ url_for('sales.main') }}">{{ _("Word Order") }}</a></li>
+                    <li><a href="{{ url_for('hr.main') }}">{{ _("Human Resources") }}</a></li>
                 </ul>
             </div>
         </div>
@@ -53,9 +54,9 @@
         {% endif %}
     </div>
     <div id="container" class="clearfix">
-        <div class="sidebar">
-            {% include "order/_function_menu.html" %}
-        </div>
+        {%- block sidebar %}{%- endblock %}
+
+        {%- block topbar %}{%- endblock %}
 
         {%- if get_flashed_messages() -%}
         <div id="flashed">
