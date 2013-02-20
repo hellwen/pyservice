@@ -81,11 +81,10 @@ class Employee(db.Model, UserMixin):
     id_card = db.Column(db.String(50))
     home_addr = db.Column(db.String(100))
     # birth
-    date_of_birth = db.Column(db.DateTime, default=datetime.utcnow)
+    date_of_birth = db.Column(db.DateTime)
     place_of_birth = db.Column(db.String(100))
     ## manage info
     active = db.Column(db.Boolean, default=True)
-
 
     class Permissions(object):
         def __init__(self, obj):

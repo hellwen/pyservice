@@ -59,7 +59,7 @@ def employee():
         ("place_of_birth", _("Place of Birth")), ("remark", _("Remark")))
     return render_template("list.html", folder="hr", link="hr.employee", showfields=showfields, table=employee)
 
-@hr.route("/employee/edit=<int:id>", methods=("GET","POST"))
+@hr.route("/employee/edit=<int:id>/", methods=("GET","POST"))
 def employee_edit(id):
     # is add
     if id==0:
@@ -87,7 +87,7 @@ def employee_edit(id):
 
         return redirect(url_for('hr.employee'))
 
-    return render_template("hr/employee.html", form=form)
+    return render_template("hr/employee.html", form=form)   
 
 
 @hr.route("/job/delete=<int:id>/", methods=("GET","POST"))
