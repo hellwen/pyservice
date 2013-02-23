@@ -50,13 +50,16 @@ def employee():
         left join jobs d on d.id = a.job \
         left join employees e on e.id = a.manager \
         ")
-    showfields = (("emp_code", _("Employee Code")), ("emp_name", _("Employee")), ("work_addr", _("Work Address")), 
-        ("work_email", _("Work Email")), ("work_phone", _("Work Phone")), ("work_mobile", _("Work Mobile")),
-        ("office_location", _("Office Location")), ("related_user", _("Related User")), ("department", _("Department")),
-        ("job", _("Job")), ("level", _("Level")), ("manager", _("Manager")), ("is_manager", _("Is Manager")), 
-        ("gender", _("Gender")), ("marital", _("Marital")),  ("num_children", _("Number Children")), 
-        ("id_card", _("ID Card")), ("home_addr", _("Home Address")), ("date_of_birth", _("Date of Birth")),
-        ("place_of_birth", _("Place of Birth")), ("remark", _("Remark")))
+    # showfields = (("emp_code", _("Employee Code")), ("emp_name", _("Employee")), ("work_addr", _("Work Address")), 
+    #     ("work_email", _("Work Email")), ("work_phone", _("Work Phone")), ("work_mobile", _("Work Mobile")),
+    #     ("office_location", _("Office Location")), ("related_user", _("Related User")), ("department", _("Department")),
+    #     ("job", _("Job")), ("level", _("Level")), ("manager", _("Manager")), ("is_manager", _("Is Manager")), 
+    #     ("gender", _("Gender")), ("marital", _("Marital")),  ("num_children", _("Number Children")), 
+    #     ("id_card", _("ID Card")), ("home_addr", _("Home Address")), ("date_of_birth", _("Date of Birth")),
+    #     ("place_of_birth", _("Place of Birth")), ("remark", _("Remark")))
+    showfields = (("emp_code", _("Employee Code")), ("emp_name", _("Employee")), 
+        ("job", _("Job")), ("department", _("Department")), ("level", _("Level")), ("manager", _("Manager")), ("is_manager", _("Is Manager")), 
+        ("gender", _("Gender")), ("id_card", _("ID Card")))
     return render_template("list.html", folder="hr", link="hr.employee", showfields=showfields, table=employee)
 
 @hr.route("/employee/edit=<int:id>/", methods=("GET","POST"))
@@ -71,11 +74,11 @@ def employee_edit(id):
     form = EmployeeForm(next=request.args.get('next',None), obj=employee)
 
     form.related_user.choices = [(0, "")]
-    form.related_user.choices.extend([(g.id, g.emp_name) for g in Employee.query.order_by('emp_name')])
-    form.department.choices = [(g.id, g.dept_name) for g in Department.query.order_by('dept_name')]
-    form.job.choices = [(g.id, g.job_name) for g in Job.query.order_by('job_name')]
+    form.related_user.choices.extend([(g.id, g.emp_name) for g in Employee.query.filter_by(active=True).order_by('emp_name')])
+    form.department.choices = [(g.id, g.dept_name) for g in Department.query.filter_by(active=True).order_by('dept_name')]
+    form.job.choices = [(g.id, g.job_name) for g in Job.query.filter_by(active=True).order_by('job_name')]
     form.manager.choices = [(0, "")]
-    form.manager.choices.extend([(g.id, g.emp_name) for g in Employee.query.order_by('emp_name')])
+    form.manager.choices.extend([(g.id, g.emp_name) for g in Employee.query.filter_by(active=True).order_by('emp_name')])
 
     if form.validate_on_submit():
         form.populate_obj(employee)
@@ -105,6 +108,7 @@ def department():
         from departments a \
         left join departments b on b.id = a.parent_department \
         left join employees c on c.id = a.manager \
+        where a.active = 1 \
         ")
     showfields = (("dept_name", _("Department")), ("manager", _("Manager")), ("parent_department", _("Parent Department")))
     return render_template("list.html", folder="hr", link="hr.department", showfields=showfields, table=department)
@@ -122,9 +126,9 @@ def department_edit(id):
     form = DepartmentForm(next=request.args.get('next',None), obj=department)
 
     form.manager.choices = [(0, "")]
-    form.manager.choices.extend([(g.id, g.emp_name) for g in Employee.query.order_by('emp_name')])
+    form.manager.choices.extend([(g.id, g.emp_name) for g in Employee.query.filter_by(active=True).order_by('emp_name')])
     form.parent_department.choices = [(0, "")]
-    form.parent_department.choices.extend([(g.id, g.dept_name) for g in Department.query.order_by('dept_name')])
+    form.parent_department.choices.extend([(g.id, g.dept_name) for g in Department.query.filter_by(active=True).order_by('dept_name')])
     
     if form.validate_on_submit():
         form.populate_obj(department)
@@ -151,6 +155,7 @@ def job():
         select a.id, a.job_name, b.dept_name as department, a.description \
         from jobs a \
         left join departments b on b.id = a.department \
+        where a.active = 1 \
         ")
     showfields = (("job_name", _("Job")), ("department", _("Department")), ("description", _("Description")))
     return render_template("list.html", folder="hr", link="hr.job", showfields=showfields, table=job)
@@ -167,7 +172,7 @@ def job_edit(id):
     form = JobForm(next=request.args.get('next',None), obj=job)
 
     form.department.choices = [(0, "")]
-    form.department.choices.extend([(g.id, g.dept_name) for g in Department.query.order_by('dept_name')])
+    form.department.choices.extend([(g.id, g.dept_name) for g in Department.query.filter_by(active=True).order_by('dept_name')])
 
     if form.validate_on_submit():
         form.populate_obj(job)

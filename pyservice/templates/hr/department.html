@@ -1,6 +1,5 @@
 {% extends theme("layout.html") %}
-{% from "macros/_forms.html" import render_errors %}
-{% from "macros/_forms.html" import render_tips %}
+{% from "macros/_forms.html" import render_field %}
 
 {%- block sidebar %}
 <div class="sidebar">
@@ -16,22 +15,18 @@
             <table cellspacing="0" class="form-table">
             <tbody>
                 <tr>
-                    <th>{{ form.dept_name.label }}{% if form.dept_name.flags.required %}*{% endif %}</th>
-                    <td>{{ form.dept_name(size=30) }} {{ render_errors(form.dept_name) }}</td>
-
-                    <th>{{ form.manager.label }}</th>
-                    <td>{{ form.manager }} {{ render_errors(form.manager) }}</td>                    
-                </tr>                
+                    {{ render_field(form.dept_name) }}
+                    {{ render_field(form.manager) }}
+                </tr>
                 <tr>
-                    <th>{{ form.parent_department.label }}</th>
-                    <td>{{ form.parent_department }} {{ render_errors(form.parent_department) }}</td>                 
+                    {{ render_field(form.parent_department) }}
                 </tr>
                 <tr>
                     <th></th>
                     <td>{{ form.submit }}</td>
                 </tr>
             </tbody>
-            </table>            
+            </table>
         </form>
     </div>
 </div>
