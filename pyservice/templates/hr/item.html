@@ -1,0 +1,34 @@
+{% extends theme("layout.html") %}
+{% from "macros/_forms.html" import render_field %}
+
+{%- block sidebar %}
+<div class="sidebar">
+    {% include "hr/_sidebar.html" %}
+</div>
+{%- endblock %}
+
+{%- block content %}
+<div class="content">
+    <div id="Employee">
+        <form method="POST" action=".">
+            {{ form.hidden_tag() }}
+            <table cellspacing="0" class="form-table">
+            <tbody>
+                <tr>
+                    {{ render_field(form.group_id) }}
+                    {{ render_field(form.group_name) }}
+                </tr>                
+                <tr>
+                    {{ render_field(form.item_id) }}
+                    {{ render_field(form.item_name) }}
+                </tr>
+                <tr>
+                    <th></th>
+                    <td>{{ form.submit }}</td>
+                </tr>
+            </tbody>
+            </table>            
+        </form>
+    </div>
+</div>
+{%- endblock %}
