@@ -45,13 +45,10 @@ class EmployeeForm(Form):
 
     ## personal info
     # status
-    gender = SelectField(_("Gender"), coerce=int, choices=[
-                                      (Employee.MALE, "Male"),
-                                      (Employee.FEMALE, "Female")])
-    marital = SelectField(_("Marital Status"), coerce=int, choices=[
-                                      (Employee.SINGLE, "Single"), 
-                                      (Employee.MARRIED, "Married"), 
-                                      (Employee.DIVORCED, "Divorced")])
+    gender_id = SelectField(_("Gender"), coerce=int, validators=[
+                          required(message=_("You must choices a Gender"))])
+    marital_id = SelectField(_("Marital Status"), coerce=int, validators=[
+                          required(message=_("You must choices a Marital Status"))])
     num_children = IntegerField(_("Number of Children"), default=0)
     # contact
     id_card = TextField(_("ID Card"))
@@ -71,7 +68,7 @@ class DepartmentForm(Form):
                       required(message=\
                         _("You must provide an department name"))])
     manager = SelectField(_("Manager"), default=0, coerce=int, validators=[optional()])
-    parent_department = SelectField(_("Parent Department"), default=0, coerce=int, validators=[optional()])
+    parent_id = SelectField(_("Parent Department"), default=0, coerce=int, validators=[optional()])
 
     next = HiddenField()
 
@@ -82,10 +79,24 @@ class JobForm(Form):
 
     job_name = TextField(_("Name"), validators=[
                       required(message=_("You must provide an job name"))])
-    department = SelectField(_("Department"), default=0, coerce=int, validators=[optional()])
+    department_id = SelectField(_("Department"), default=0, coerce=int, validators=[optional()])
     description = TextAreaField(_("Description"))
 
     next = HiddenField()    
 
     submit = SubmitField(_("Save"))
 
+class ItemForm(Form):
+
+    group_id = TextField(_("Group ID"), validators=[
+                      required(message=_("You must provide"))])
+    group_name = TextField(_("Group Name"), validators=[
+                      required(message=_("You must provide"))])
+    item_id = TextField(_("Item ID"), validators=[
+                      required(message=_("You must provide"))])
+    item_name = TextField(_("Item Name"), validators=[
+                      required(message=_("You must provide"))])
+
+    next = HiddenField()    
+
+    submit = SubmitField(_("Save"))

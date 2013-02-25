@@ -12,13 +12,14 @@ from werkzeug import cached_property
 
 from flask import abort, current_app
 
-from flask.ext.sqlalchemy import BaseQuery
+# from flask.ext.sqlalchemy import BaseQuery
+import flask.ext.sqlalchemy
 from flask.ext.principal import RoleNeed, UserNeed, Permission
 from flask.ext.login import UserMixin
+import flask.ext.restless
 
-from pyservice.extensions import db, cache
+from pyservice.extensions import db, cache, restapi
 from pyservice.permissions import admin
-
 
 # class EmployeeQuery(BaseQuery):
     
@@ -69,13 +70,8 @@ class Employee(db.Model, UserMixin):
     date_of_leaved = db.Column(db.DateTime)
     ## personal info
     # status
-    MALE=100
-    FEMALE=200
-    gender = db.Column(db.Integer, default=MALE, nullable=False)
-    SINGLE=100
-    MARRIED=200
-    DIVORCED=300
-    marital = db.Column(db.Integer, default=SINGLE, nullable=False)
+    gender_id = db.Column(db.Integer, nullable=False)
+    marital_id = db.Column(db.Integer, nullable=False)
     num_children = db.Column(db.Integer, default=0, nullable=False)
     # contact
     id_card = db.Column(db.String(50))
@@ -107,6 +103,21 @@ class Employee(db.Model, UserMixin):
     def permissions(self):
         return self.Permissions(self)
 
+    def joinall(self):
+        return db.session.execute(" \
+            select a.id, a.emp_code, a.emp_name, a.work_addr, a.work_email, a.work_phone, a.work_mobile, \
+                a.office_location, b.emp_name as related_user, c.dept_name as department, d.job_name as job, \
+                a.level, e.emp_name as manager, a.is_manager, a.date_of_leaved, f.item_name as gender, i.item_name as marital, \
+                a.num_children, a.id_card, a.home_addr, a.date_of_birth, a.place_of_birth, a.remark \
+            from employees a \
+            left join employees b on b.id = a.related_user \
+            left join departments c on c.id = a.department \
+            left join jobs d on d.id = a.job \
+            left join employees e on e.id = a.manager \
+            left join items f on f.item_id = a.gender_id \
+            left join items i on i.item_id = a.gender_id \
+            ")        
+
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -123,30 +134,18 @@ class Department(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     dept_name = db.Column(db.String(50), unique=True)
     manager = db.Column(db.Integer, default=0)
-    parent_department = db.Column(db.Integer, default=0)
-    ## manage info
+    parent_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
+    parent = db.relationship("Department", foreign_keys=parent_id, remote_side=id)
     active = db.Column(db.Boolean, default=True)
 
-    class Permissions(object):
-        def __init__(self, obj):
-            self.obj = obj
-    
-        @cached_property
-        def edit(self):
-            return Permission(UserNeed(self.obj.id)) & admin
-  
-    def __init__(self, *args, **kwargs):
-        super(Department, self).__init__(*args, **kwargs)
-
-    def __str__(self):
-        return self.dept_name
-    
-    def __repr__(self):
-        return "<%s>" % self
-    
-    @cached_property
-    def permissions(self):
-        return self.Permissions(self)
+    def joinall(self):
+        return db.session.execute(" \
+        select a.id, a.dept_name, c.emp_name as manager, b.dept_name as parent_department \
+        from departments a \
+        left join departments b on b.id = a.parent_id \
+        left join employees c on c.id = a.manager \
+        where a.active = 1 \
+        ")
 
     def save(self):
         db.session.add(self)
@@ -157,37 +156,52 @@ class Department(db.Model, UserMixin):
         db.session.commit()
         
 
-class Job(db.Model, UserMixin):
+class Job(db.Model):
 
     __tablename__ = 'jobs'
-    
+
     id = db.Column(db.Integer, primary_key=True)
     job_name = db.Column(db.String(50), unique=True)
-    department = db.Column(db.Integer, default=0)
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
+    # department = db.relationship("Department", foreign_keys=department_id, remote_side=id)
+
     description = db.Column(db.String(500))
-    ## manage info
     active = db.Column(db.Boolean, default=True)
 
-    class Permissions(object):
-        def __init__(self, obj):
-            self.obj = obj
+    def joinall(self):
+        return db.session.execute(" \
+            select a.id, a.job_name, a.department_id, b.dept_name as department, a.description \
+            from jobs a \
+            left join departments b on b.id = a.department_id \
+            where a.active = 1 \
+            ")
     
-        @cached_property
-        def edit(self):
-            return Permission(UserNeed(self.obj.id)) & admin
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
-    def __init__(self, *args, **kwargs):
-        super(Job, self).__init__(*args, **kwargs)
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
-    def __str__(self):
-        return self.job_name
-    
-    def __repr__(self):
-        return "<%s>" % self
-    
-    @cached_property
-    def permissions(self):
-        return self.Permissions(self)
+class Item(db.Model):
+
+    __tablename__ = 'items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.Integer, nullable=False)
+    group_name = db.Column(db.String(30), nullable=False)
+    item_id = db.Column(db.Integer, unique=True, nullable=False)
+    item_name = db.Column(db.String(50), nullable=False)
+    active = db.Column(db.Boolean, default=True)
+
+    def joinall(self):
+        return db.session.execute(" \
+            select a.id, a.group_id, a.group_name, a.item_id, a.item_name \
+            from items a \
+            where a.active = 1 \
+            order by a.group_id, a.item_id \
+            ")
 
     def save(self):
         db.session.add(self)

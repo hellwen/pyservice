@@ -5,5 +5,6 @@
         <li class="parent_menu">{{ _("Basic") }}</li>
             <li class="child_menu"><a href="{{ url_for('hr.department',next=request.path) }}">{{ _("Department") }}</a></li>
             <li class="child_menu"><a href="{{ url_for('hr.job') }}">{{ _("Job") }}</a></li>
+            <li class="child_menu"><a href="{{ url_for('hr.item') }}">{{ _("Base Item") }}</a></li>
     </ul>
 </div>

@@ -9,24 +9,27 @@
     <title> {% block title %}{% endblock %} AS services </title>    
     {%- block css %}
     <link rel="stylesheet" href="{{ theme_static('style.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ theme_static('theme.default.css') }}" type="text/css" />
     {%- endblock %}
     {%- block js %}
+    <script type="text/javascript" language="javascript" src="{{ theme_static('jquery.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ theme_static('jquery.tablesorter.min.js') }}"></script>
     <script type="text/javascript">
-    $(function(){
-        $("#go-to-top").click(function(){
-            $("html, body").animate({'scrollTop': 0}, 400);
-            return false;
-        });
-        $(window).scroll(function() {
-            var top = $(document).scrollTop();
-            var g = $("#go-to-top");
-            if (top > 300 && g.is(":hidden")) {
-                g.fadeIn();
-            } else if(top < 300 && g.is(":visible")) {
-                g.fadeOut();
-            }
-        });
-    })
+        // $(function(){
+        //     $("#go-to-top").click(function(){
+        //         $("html, body").animate({'scrollTop': 0}, 400);
+        //         return false;
+        //     });
+        //     $(window).scroll(function() {
+        //         var top = $(document).scrollTop();
+        //         var g = $("#go-to-top");
+        //         if (top > 300 && g.is(":hidden")) {
+        //             g.fadeIn();
+        //         } else if(top < 300 && g.is(":visible")) {
+        //             g.fadeOut();
+        //         }
+        //     });
+        // })
     </script>
     {%- endblock %} 
 </head>

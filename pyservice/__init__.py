@@ -21,10 +21,11 @@ from flask.ext.themes import setup_themes, load_themes_from
 from flask.ext.principal import Principal, RoleNeed, UserNeed, identity_loaded
 from flask.ext.uploads import configure_uploads
 from flask.ext.login import LoginManager
+import flask.ext.sqlalchemy
 
 from pyservice import views, helpers
-from pyservice.models import User
-from pyservice.extensions import db, mail, cache, photos
+from pyservice.models import User, Job, Department
+from pyservice.extensions import db, mail, cache, photos, restapi, login_manager
 from pyservice.helpers import render_template
 
 DEFAULT_APP_NAME = 'pyservice'
@@ -49,6 +50,7 @@ def create_app(config=None, modules=None):
     
     configure_extensions(app)
     
+    configure_login(app)
     configure_identity(app)
     configure_logging(app)
     configure_errorhandlers(app)
@@ -68,22 +70,12 @@ def create_app(config=None, modules=None):
 def configure_extensions(app):
     # configure extensions          
     db.init_app(app)
+    restapi.init_app(app, flask_sqlalchemy_db=db)
+    restapi.create_api(Job, collection_name="job", methods=['GET', 'POST', 'DELETE'])
+    restapi.create_api(Department, collection_name="department", methods=['GET', 'POST', 'DELETE'])
     mail.init_app(app)
     cache.init_app(app)
     setup_themes(app)
-
-    # flask-login
-    login_manager = LoginManager()
-    login_manager.setup_app(app)
-    # login_manager.login_view = "login"
-    # login_manager.login_message = u"Please log in to access this page."
-    # login_manager.refresh_view = "reauth"
-    # login_manager.setup_app(app)
-
-    @login_manager.user_loader
-    def load_user(userid):
-        return User.query.filter_by(id=userid).first()   
-
 
 def configure_identity(app):
 
@@ -93,6 +85,16 @@ def configure_identity(app):
     def on_identity_loaded(sender, identity):
         g.user = User.query.from_identity(identity)
 
+def configure_login(app):
+    login_manager.setup_app(app)
+    # login_manager.login_view = "login"
+    # login_manager.login_message = u"Please log in to access this page."
+    # login_manager.refresh_view = "reauth"
+    # login_manager.setup_app(app)
+
+    @login_manager.user_loader
+    def load_user(userid):
+        return User.query.filter_by(id=userid).first()  
 
 def configure_i18n(app):
 

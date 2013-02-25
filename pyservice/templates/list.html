@@ -1,5 +1,18 @@
 {% extends theme("layout.html") %}
 
+{%- block js %}
+    {{ super() }}
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function() {
+            $('#example').tablesorter({
+                usNumberFormat : false,
+                sortReset      : true,
+                sortRestart    : true
+            });
+        });            
+    </script>
+{%- endblock %}
+
 {%- block sidebar %}
 <div class="sidebar">
     {% include folder + "/_sidebar.html" %}
@@ -15,20 +28,20 @@
 {% block content %}
 <div class="content">
     {%- if showfields and table %}
-        <table cellspacing="0" class="form-table" border=1>
-        <header>
+        <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+        <thead>
             <tr>
                 <th></th>
                 {%- for field in showfields %}
-                <td>{{ field[1] }}</td>
+                <th>{{ field[1] }}</th>
                 {%- endfor %}
             </tr>
-        </header>
+        </thead>
         <tbody>
             {%- for row in table %}
             <tr>
                 {%- if row.id %}
-                <th>
+                <td>
                     <div class="table_button">
                         <a href="{{ url_for(link + '_edit', id=row.id) }}" id="edit">{{ _("Edit") }}</a>
                         <a href="{{ url_for(link + '_delete', id=row.id) }}" id="delete">{{ _("Delete") }}</a>
