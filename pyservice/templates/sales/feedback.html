@@ -1,15 +1,102 @@
 {% extends theme("layout.html") %}
-
-{% from "macros/_page.html" import paginate %}
-
-{%- block content %}
-<div class="content">
-    Welcome
-</div>
-{%- endblock %}
+{% from "macros/_forms.html" import render_field %}
 
 {%- block sidebar %}
 <div class="sidebar">
-    {% include "sales/_function_menu.html" %}
+    {% include "sales/_sidebar.html" %}
+</div>
+{%- endblock %}
+
+{%- block content %}
+<div class="content">
+    <div id="Order">
+        <form method="POST" action=".">
+            {{ form.hidden_tag() }}
+            <table cellspacing="0" class="form-table">
+            <tbody>
+                <tr>
+                    {{ render_field(form.bill_type, readonly=true) }}
+                    {{ render_field(form.bill_flag, readonly=true) }}
+                    {{ render_field(form.self_code, readonly=true) }}
+                    {{ render_field(form.work_sheet_no, readonly=true) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.user_name, readonly=true) }}
+                    {{ render_field(form.user_tele, readonly=true) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.user_address, readonly=true) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.good_model, readonly=true) }}
+                    {{ render_field(form.good_code, readonly=true) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.report_gz, readonly=true) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.appearance, readonly=true) }}
+                    {{ render_field(form.accessory, readonly=true) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.receive_date, readonly=true) }}
+                    {{ render_field(form.apply_time_limit, readonly=true) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.fetch_date, readonly=true) }}
+                    {{ render_field(form.mend_property_id, readonly=true) }}                    
+                </tr>
+                <!-- 维修信息 -->
+                <tr>
+                    {{ render_field(form.shou_man_id) }}
+                    {{ render_field(form.gz_reason) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.wx_deal) }}
+                    {{ render_field(form.cq_reason) }}
+                </tr>   
+                <tr>
+                    {{ render_field(form.deal_type_id) }}
+                    {{ render_field(form.mend_date) }}
+                </tr>  
+                <tr>
+                    {{ render_field(form.bx_mater) }}
+                    {{ render_field(form.bx_mater_fee) }}
+                </tr>  
+                <tr>
+                    {{ render_field(form.zf_mater) }}
+                    {{ render_field(form.zf_mater_fee) }}
+                </tr>  
+                <tr>
+                    {{ render_field(form.bx_gs) }}
+                    {{ render_field(form.zf_gs) }}
+                    {{ render_field(form.sm_gs) }}
+                </tr>  
+                <tr>
+                    {{ render_field(form.other_fee) }}
+                    {{ render_field(form.user_gs_fee) }}
+                </tr> 
+                <tr>
+                    {{ render_field(form.distance_km) }}
+                    {{ render_field(form.shou_car_flag) }}
+                </tr> 
+                <!-- # 发件信息 -->
+                <tr>
+                    {{ render_field(form.fj_emp_id) }}
+                    {{ render_field(form.fj_invoice) }}
+                </tr> 
+                <tr>
+                    {{ render_field(form.fj_date) }}
+                </tr> 
+                <tr>
+                    {{ render_field(form.remark) }}
+                </tr> 
+                <tr>
+                    {{ form.submit }}
+                </tr>
+            </tbody>
+            </table>            
+        </form>
+    </div>
 </div>
 {%- endblock %}

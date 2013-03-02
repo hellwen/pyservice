@@ -14,6 +14,7 @@ from flask import abort, current_app
 
 # from flask.ext.sqlalchemy import BaseQuery
 import flask.ext.sqlalchemy
+# import sqlalchemy
 from flask.ext.principal import RoleNeed, UserNeed, Permission
 from flask.ext.login import UserMixin
 import flask.ext.restless
@@ -189,18 +190,37 @@ class Item(db.Model):
     __tablename__ = 'items'
 
     id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.Integer, nullable=False)
+    group_id = db.Column(db.Integer, nullable=False, index=True)
     group_name = db.Column(db.String(30), nullable=False)
-    item_id = db.Column(db.Integer, unique=True, nullable=False)
+    item_id = db.Column(db.Integer, unique=True, nullable=False, index=True)
+    item_order = db.Column(db.Integer, default=0)
     item_name = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, default=True)
 
+    def __init__(self, *args):
+        if len(args) == 5:
+            self.group_id = args[0]
+            self.group_name = args[1]
+            self.item_id = args[2]
+            self.item_order = args[3]
+            self.item_name = args[4]
+            self.active = True
+        else:        
+            super(Item, self).__init__(*args)
+
+    # def __init__(self, group_id, group_name, item_id, item_name):
+        # self.group_id = group_id
+        # self.group_name = group_name
+        # self.item_id = item_id
+        # self.item_name = item_name
+        # self.active = True       
+
     def joinall(self):
         return db.session.execute(" \
-            select a.id, a.group_id, a.group_name, a.item_id, a.item_name \
-            from items a \
-            where a.active = 1 \
-            order by a.group_id, a.item_id \
+            select id, group_id, group_name, item_id, item_order, item_name \
+            from items \
+            where active = 1 \
+            order by group_id, item_order \
             ")
 
     def save(self):
@@ -209,4 +229,5 @@ class Item(db.Model):
 
     def delete(self):
         db.session.delete(self)
-        db.session.commit()        
+        db.session.commit()
+

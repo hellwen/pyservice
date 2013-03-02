@@ -42,7 +42,7 @@ def main():
 def employee():
     employee = Employee()
     showfields = (("emp_code", _("Employee Code")), ("emp_name", _("Employee")), 
-        ("job", _("Job")), ("department", _("Department")), ("level", _("Level")), ("manager", _("Manager")), ("is_manager", _("Is Manager")), 
+        ("job", _("Job")), ("department", _("Department")), ("level", _("Level")), ("manager", _("Manager")), 
         ("gender", _("Gender")), ("id_card", _("ID Card")))
     return render_template("list.html", folder="hr", link="hr.employee", showfields=showfields, table=employee.joinall())
 
@@ -61,8 +61,8 @@ def employee_edit(id):
     form.related_user.choices.extend([(g.id, g.emp_name) for g in Employee.query.filter_by(active=True).order_by('emp_name')])
     form.department.choices = [(g.id, g.dept_name) for g in Department.query.filter_by(active=True).order_by('dept_name')]
     form.job.choices = [(g.id, g.job_name) for g in Job.query.filter_by(active=True).order_by('job_name')]
-    form.gender_id.choices = [(g.item_id, g.item_name) for g in Item.query.filter_by(active=True, group_id=10).order_by('item_id')]
-    form.marital_id.choices = [(g.item_id, g.item_name) for g in Item.query.filter_by(active=True, group_id=20).order_by('item_id')]
+    form.gender_id.choices = [(g.item_id, g.item_name) for g in Item.query.filter_by(active=True, group_id=1).order_by('item_id')]
+    form.marital_id.choices = [(g.item_id, g.item_name) for g in Item.query.filter_by(active=True, group_id=2).order_by('item_id')]
     form.manager.choices = [(0, "")]
     form.manager.choices.extend([(g.id, g.emp_name) for g in Employee.query.filter_by(active=True).order_by('emp_name')])
 
@@ -170,7 +170,7 @@ def job_delete(id):
 @hr.route("/item/", methods=("GET","POST"))
 def item():
     item = Item()
-    showfields = (("group_id", _("Group Id")), ("group_name", _("Group Name")), ("item_id", _("Item Id")), ("item_name", _("Item Name")))
+    showfields = (("item_id", _("Item Id")), ("item_order", _("Item Order")), ("item_name", _("Item Name")), ("group_id", _("Group ID")), ("group_name", _("Group Name")))
     return render_template("list.html", folder="hr", link="hr.item", showfields=showfields, table=item.joinall())
 
 @hr.route("/item/edit=<int:id>/", methods=("GET","POST"))
@@ -186,6 +186,7 @@ def item_edit(id):
 
     if form.validate_on_submit():
         form.populate_obj(item)
+        item.unique_id = item.group_id * 1000 + item.item_id
         item.save()
 
         next_url = form.next.data

@@ -1,0 +1,63 @@
+{% extends theme("layout.html") %}
+
+{%- block js %}
+    {{ super() }}
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function() {
+            $('#example').tablesorter({
+                usNumberFormat : false,
+                sortReset      : true,
+                sortRestart    : true
+            });
+        });            
+    </script>
+{%- endblock %}
+
+{%- block sidebar %}
+<div class="sidebar">
+    {% include folder + "/_sidebar.html" %}
+</div>
+{%- endblock %}
+
+{%- block topbar %}
+<div class="topbar">
+    {% include folder + "/_topbar.html" %}
+</div>
+{%- endblock %}
+
+{% block content %}
+<div class="content">
+    {%- if showfields and table %}
+        <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+        <thead>
+            <tr>
+                <th></th>
+                {%- for field in showfields %}
+                <th>{{ field[1] }}</th>
+                {%- endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {%- for row in table %}
+            <tr>
+                {%- if row.id %}
+                <td>
+                    <div class="table_button">
+                        <a href="{{ url_for(link + '_edit', id=row.id) }}" id="edit">{{ _("Edit") }}</a>
+                    </div>
+                </td>
+                {%- endif %}
+                {%- for field in showfields %}
+                    {%- if row[field[0]] %}
+                        <td>{{ row[field[0]] }}</td>
+                    {%- else %}
+                        <td></td>
+                    {%- endif %}
+                {%- endfor %}
+            </tr>
+            {%- endfor %}
+        </tbody>
+        </table>
+    {%- endif %}
+</div>
+{% endblock %}

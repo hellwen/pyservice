@@ -88,15 +88,17 @@ class JobForm(Form):
 
 class ItemForm(Form):
 
+    item_id = TextField(_("Item ID"), validators=[
+                      required(message=_("You must provide"))])
+    item_order = TextField(_("Item Order"), validators=[
+                      required(message=_("You must provide"))])    
+    item_name = TextField(_("Item Name"), validators=[
+                      required(message=_("You must provide"))])
     group_id = TextField(_("Group ID"), validators=[
                       required(message=_("You must provide"))])
     group_name = TextField(_("Group Name"), validators=[
                       required(message=_("You must provide"))])
-    item_id = TextField(_("Item ID"), validators=[
-                      required(message=_("You must provide"))])
-    item_name = TextField(_("Item Name"), validators=[
-                      required(message=_("You must provide"))])
 
-    next = HiddenField()    
+    next = HiddenField()
 
     submit = SubmitField(_("Save"))

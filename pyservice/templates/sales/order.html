@@ -1,15 +1,90 @@
 {% extends theme("layout.html") %}
+{% from "macros/_forms.html" import render_field %}
 
-{% from "macros/_page.html" import paginate %}
 
-{%- block content %}
-<div class="content">
-    Welcome
-</div>
+{%- block js %}
+    {{ super() }}
+    <script type="text/javascript">
+        $(function() {
+            $( "#buy_date" ).datetimepicker({
+              showButtonPanel: true,
+              timeFormat: "hh:mm:ss",
+              dateFormat: "yy-mm-dd"
+            });
+          });
+    </script>
 {%- endblock %}
 
 {%- block sidebar %}
 <div class="sidebar">
-    {% include "sales/_function_menu.html" %}
+    {% include "sales/_sidebar.html" %}
+</div>
+{%- endblock %}
+
+{%- block content %}
+<div class="content">
+    <div id="Order">
+        <form method="POST" action=".">
+            {{ form.hidden_tag() }}
+            <table cellspacing="0" class="form-table">
+            <tbody>
+                <tr>
+                    {{ render_field(form.bill_type) }}
+                    {{ render_field(form.bill_flag) }}
+                    {{ render_field(form.self_code) }}
+                    {{ render_field(form.work_sheet_no) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.user_name) }}
+                    {{ render_field(form.user_tele) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.user_address) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.good_model) }}
+                    {{ render_field(form.good_code) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.report_gz) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.appearance) }}
+                    {{ render_field(form.accessory) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.vendor) }}
+                    {{ render_field(form.buy_date) }}
+                </tr>                    
+                <tr>
+                    {{ render_field(form.invoice_no) }}
+                    {{ render_field(form.ensure_no) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.receive_date) }}
+                    {{ render_field(form.apply_time_limit) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.fetch_date) }}
+                    {{ render_field(form.mend_property_id) }}                    
+                </tr>
+                <tr>
+                    {{ render_field(form.user_type_id) }}
+                    {{ render_field(form.source_of_info_id) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.receiver_id) }}
+                    {{ render_field(form.department_id) }}
+                </tr>
+                <tr>
+                    {{ render_field(form.remark) }}
+                </tr> 
+                <tr>
+                    {{ form.submit }}
+                </tr>
+            </tbody>
+            </table>            
+        </form>
+    </div>
 </div>
 {%- endblock %}
