@@ -30,7 +30,7 @@ from flask.ext.wtf import Form, TextAreaField, HiddenField, BooleanField, Submit
         required, optional, email, equal_to, regexp, QuerySelectField
 
 from pyservice.helpers import render_template, cached
-from pyservice.extensions import db, restapi, admin
+from pyservice.extensions import db, restapi
 
 from pyservice.models import Employee, Department, Job, ItemGroup, Item
 from pyservice.forms import EmployeeForm, DepartmentForm, JobForm

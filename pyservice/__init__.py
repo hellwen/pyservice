@@ -22,11 +22,10 @@ from flask.ext.uploads import configure_uploads
 from flask.ext.login import LoginManager, current_user
 
 from flask_debugtoolbar import DebugToolbarExtension
-from admin import Admin, AdminIndexView, expose
 import flask.ext.sqlalchemy
 from pyservice import views, helpers
 from pyservice.models import User
-from pyservice.extensions import db, mail, cache, photos, restapi, login_manager, admin
+from pyservice.extensions import db, mail, cache, photos, restapi, login_manager
 
 DEFAULT_APP_NAME = 'pyservice'
 
@@ -53,7 +52,6 @@ def create_app(config=None, modules=None):
     configure_extensions(app)
     configure_login(app)
 
-    configure_admin(app)
     configure_identity(app)
     configure_logging(app)
     configure_errorhandlers(app)
@@ -86,22 +84,6 @@ def configure_identity(app):
     @identity_loaded.connect_via(app)
     def on_identity_loaded(sender, identity):
         g.user = User.query.from_identity(identity)
-
-def configure_admin(app):
-
-    # Create customized index view class
-    class MyAdminIndexView(AdminIndexView):
-        def is_accessible(self):
-            return current_user.is_authenticated()            
-
-        # @expose('/')
-        # def index(self):
-        #     arg1 = 'Hello'
-        #     return render_template('index.html', arg1=arg1)            
-
-    admin.init_app(app)
-    admin.name = DEFAULT_APP_NAME
-    admin.index_view = MyAdminIndexView(url="/")
 
 def configure_login(app):
     login_manager.setup_app(app)

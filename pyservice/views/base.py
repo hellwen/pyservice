@@ -13,7 +13,7 @@ from flask import Module
 from flask.ext.babel import gettext as _
 from flask.ext import wtf
 
-from pyservice.extensions import db, admin
+from pyservice.extensions import db
 from pyservice.helpers import render_template
 from pyservice.models import ItemGroup, Item
 

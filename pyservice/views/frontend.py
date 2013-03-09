@@ -21,12 +21,11 @@ from flask import Module, Response, request, flash, jsonify, g, current_app,\
 from flaskext.babel import gettext as _
 
 from pyservice.helpers import render_template, cached
-from pyservice.extensions import db, admin
+from pyservice.extensions import db
 from flask.ext.login import login_required
 
 from pyservice.models import User, Employee
 from pyservice.forms import LoginForm, SignupForm
-from admin.contrib import sqlamodel
 
 frontend = Module(__name__)
 
