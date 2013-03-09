@@ -7,7 +7,7 @@ from flask.ext.cache import Cache
 from flask.ext.uploads import UploadSet, IMAGES
 from flask.ext.restless import APIManager
 from flask.ext.login import LoginManager
-from admin import Admin
+from flask.ext.admin import Admin
 
 __all__ = ['mail', 'db', 'cache', 'photos', 'restapi', 'login_manager', 'admin']
 

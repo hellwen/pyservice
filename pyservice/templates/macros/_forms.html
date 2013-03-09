@@ -3,10 +3,10 @@
     <div class="control-group">
         <label class="control-label">{{ field.label }}</label>
         <div class="controls">
-        <td>{{ field(**kwargs) | safe }}
-        {% if field.flags.required %}*{% endif %}
-        {{ render_tip(field) }}
-        {{ render_errors(field) }}
+            {{ field(**kwargs) | safe }}
+            {% if field.flags.required %}*{% endif %}
+            {{ render_tip(field) }}
+            {{ render_errors(field) }}
         </div>
     </div>
 {% endmacro %}

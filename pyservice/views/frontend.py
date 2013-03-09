@@ -26,7 +26,6 @@ from flask.ext.login import login_required
 
 from pyservice.models import User, Employee
 from pyservice.forms import LoginForm, SignupForm
-from admin.contrib import sqlamodel
 
 frontend = Module(__name__)
 
@@ -34,7 +33,8 @@ frontend = Module(__name__)
 @frontend.route("/index", methods=("GET","POST"))
 @login_required
 def index():
-    return render_template("index.html")
+    # return render_template("index.html")
+    return '<a href="/admin/">Click me to get to Admin!</a>'
 
 @frontend.route("/about", methods=("GET","POST"))
 def about():

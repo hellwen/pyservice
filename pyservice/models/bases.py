@@ -29,29 +29,9 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey(ItemGroup.id), nullable=False)
     item_id = db.Column(db.Integer, nullable=False, unique=True)
-    _item_order = db.Column('item_order', db.Integer, default=0)
+    item_order = db.Column(db.Integer, default=0)
     item_name = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, default=True)
-
-    @hybrid_property
-    def item_order(self):
-        return self._item_order
-
-    @item_order.setter
-    def item_order(self, value):
-        self._item_order = value
-        if self.group_id:
-            self.item_id = self.group_id * 1000 + value
-
-    # def _get_item_order(self):
-    #     return self._item_order
-    
-    # def _set_item_order(self, value):
-    #     self._item_order = self.group_id * 1000 + value
-    
-    # item_order = db.synonym("_item_order", 
-    #                       descriptor=property(_get_item_order,
-    #                                           _set_item_order))            
 
     def __unicode__(self):
         return self.item_name        

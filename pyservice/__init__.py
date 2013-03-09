@@ -22,7 +22,7 @@ from flask.ext.uploads import configure_uploads
 from flask.ext.login import LoginManager, current_user
 
 from flask_debugtoolbar import DebugToolbarExtension
-from admin import Admin, AdminIndexView, expose
+from flask.ext.admin import Admin, AdminIndexView, expose
 import flask.ext.sqlalchemy
 from pyservice import views, helpers
 from pyservice.models import User
