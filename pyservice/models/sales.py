@@ -7,24 +7,15 @@
 """
 
 import hashlib
-
 from datetime import datetime
-
 from werkzeug import cached_property
-
 from flask import abort, current_app
-
 from flask.ext.sqlalchemy import BaseQuery
 from flask.ext.principal import RoleNeed, UserNeed, Permission
-
 from pyservice.extensions import db, cache
-from pyservice.permissions import admin
 
 
 class MountMend(db.Model):
-
-    __tablename__          = 'mountmends'
-
     id                     = db.Column(db.Integer, primary_key=True)
     bill_type              = db.Column(db.Integer) # 安装、维修、调试、送货/安装
     bill_flag              = db.Column(db.Integer)
@@ -226,11 +217,13 @@ class MountMend(db.Model):
 #     mount_mend_fee2 = db.Column(db.Numeric(8,2))
 #     mount_mend_fee3 = db.Column(db.Numeric(8,2))
 
+# Create M2M table
+# post_tags_table = db.Table('post_tags', db.Model.metadata,
+#                            db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+#                            db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
+#                            )
 
 class MountMendMan(db.Model):
-
-    __tablename__ = 'mountmendmans'
-
     id = db.Column(db.Integer, primary_key=True)
     mountmend_id = db.Column(db.Integer, unique=True)
     employee_id = db.Column(db.String(20), unique=True)

@@ -1,4 +1,3 @@
-
 #! /usr/bin/env python
 #coding=utf-8
 """
@@ -18,17 +17,8 @@ except:
 
 from flask import Module, Response, request, flash, jsonify, g, current_app,\
     abort, redirect, url_for, session
-
 from flaskext.babel import gettext as _
-from flask.ext.principal import identity_changed, Identity, AnonymousIdentity
 
-
-from pyservice.helpers import render_template, cached
-from pyservice.permissions import auth, admin 
-from pyservice.extensions import db
-
-from pyservice.models import User, UserCode
-from pyservice.forms import LoginForm, SignupForm
 
 footer = Module(__name__)
 

@@ -19,7 +19,8 @@ from flask.ext.principal import RoleNeed, UserNeed, Permission
 from flask.ext.login import UserMixin
 
 from pyservice.extensions import db, cache
-from pyservice.permissions import admin
+from pyservice.permissions import admin_permission
+from .employees import Employee
 
 class UserQuery(BaseQuery):
 
@@ -72,8 +73,6 @@ class UserQuery(BaseQuery):
 
 class User(db.Model, UserMixin):
 
-    __tablename__ = 'users'
-    
     query_class = UserQuery
 
     PER_PAGE = 50
@@ -90,10 +89,13 @@ class User(db.Model, UserMixin):
     _password = db.Column("password", db.String(80), nullable=False)
     role = db.Column(db.Integer, default=MEMBER)
     activation_key = db.Column(db.String(40))
+    employee_id = db.Column(db.Integer, db.ForeignKey(Employee.id))
+    employee = db.relationship(Employee, foreign_keys=employee_id, backref='emp')
+
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime, default=datetime.utcnow)
     last_request = db.Column(db.DateTime, default=datetime.utcnow)
-    block = db.Column(db.Boolean, default=False)
+    active = db.Column(db.Boolean, default=True)
 
     class Permissions(object):
         
@@ -158,21 +160,3 @@ class User(db.Model, UserMixin):
     @property
     def is_admin(self):
         return self.role >= self.ADMIN
-
-# Is active code
-class UserCode(db.Model):
-
-    __tablename__ = 'usercode'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(20), nullable=False)
-    role = db.Column(db.Integer, default=User.MEMBER)
-    
-    def __init__(self, *args, **kwargs):
-        super(UserCode, self).__init__(*args, **kwargs)
-
-    def __str__(self):
-        return self.code
-    
-    def __repr__(self):
-        return "<%s>" % self

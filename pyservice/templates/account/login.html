@@ -1,34 +1,20 @@
-{% extends theme("layout.html") %}
-{% from "macros/_forms.html" import render_errors %}
+{% extends "layout.html" %}
+{% from "macros/_forms.html" import render_field %}
 
-{%- block sidebar %}{%- endblock %}
-{%- block content %}
-<h2 class="title">{{ _('Login to pyservice') }}</h2>
-<div id="sign">
-    <form method="POST" action=".">
-        {{ form.hidden_tag() }}
-        <table cellspacing="0" class="form-table">
-        <tbody>
-            <tr>
-                <th>{{ form.login.label }}</th>
-                <td>{{ form.login(size=30) }} {{ render_errors(form.login) }}</td>
-            </tr>
-            <tr>
-                <th>{{ form.password.label }}</th>
-                <td>{{ form.password(size=30) }} {{ render_errors(form.password) }}</td>
-            </tr>
-            <tr>
-                <th>{{ form.remember.label }}</th>
-                <td>{{ form.remember }}</td>
-            </tr>
-            <tr>
-                <th></th>
-                <td>{{ form.submit }}</td>
-            </tr>
-        </tbody>
-        </table>
-    </form>
-</div>
-<p><a href="{{ url_for('account.signup', next=form.next.data) }}">{{ _('Not a member yet ? Sign up !') }}</a></p>
+{%- block body %}
+<form class="form-horizontal" method="POST" action=".">
+    {{ form.hidden_tag() }}
+    <div class="control-group">
+        <div class="controls">
+        </div>
+    </div>
+    {{ render_field(form.login) }}
+    {{ render_field(form.password) }}
+    {{ render_field(form.remember, class="checkbox") }}
+    <div class="control-group">
+        <div class="controls">
+            {{ form.submit(class="btn") }}
+        </div>
+    </div>    
+</form>
 {%- endblock %}
-

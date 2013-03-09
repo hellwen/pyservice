@@ -24,7 +24,6 @@ from flask.ext.login import (LoginManager, current_user, login_required,
                              confirm_login, fresh_login_required)
 
 from pyservice.helpers import render_template, cached
-from pyservice.permissions import auth, admin 
 from pyservice.extensions import db
 
 from pyservice.models import User, MountMend, Employee, Item, Department

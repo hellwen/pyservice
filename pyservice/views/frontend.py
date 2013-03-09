@@ -11,30 +11,28 @@ import os, sys
 
 # parse_qsl moved to urlparse module in v2.6
 try:
-  from urlparse import parse_qsl
+    from urlparse import parse_qsl
 except:
-  from cgi import parse_qsl
+    from cgi import parse_qsl
 
 from flask import Module, Response, request, flash, jsonify, g, current_app,\
     abort, redirect, url_for, session
 
 from flaskext.babel import gettext as _
-from flask.ext.principal import identity_changed, Identity, AnonymousIdentity
-from flask.ext.login import (LoginManager, current_user, login_required,                                                                                                                                
-                             login_user, logout_user, UserMixin,
-                             confirm_login, fresh_login_required)
 
 from pyservice.helpers import render_template, cached
-from pyservice.permissions import auth, admin 
-from pyservice.extensions import db
+from pyservice.extensions import db, admin
+from flask.ext.login import login_required
 
-from pyservice.models import User, UserCode
+from pyservice.models import User, Employee
 from pyservice.forms import LoginForm, SignupForm
+from admin.contrib import sqlamodel
 
 frontend = Module(__name__)
 
 @frontend.route("/", methods=("GET","POST"))
 @frontend.route("/index", methods=("GET","POST"))
+@login_required
 def index():
     return render_template("index.html")
 

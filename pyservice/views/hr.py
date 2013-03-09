@@ -24,13 +24,16 @@ from flask.ext.principal import identity_changed, Identity, AnonymousIdentity
 from flask.ext.login import (LoginManager, current_user, login_required,                                                                                                                                
                              login_user, logout_user, UserMixin,
                              confirm_login, fresh_login_required)
+from flask.ext import wtf
+from flask.ext.wtf import Form, TextAreaField, HiddenField, BooleanField, SubmitField, \
+        IntegerField, SelectField, DateField, TextField, ValidationError, \
+        required, optional, email, equal_to, regexp, QuerySelectField
 
 from pyservice.helpers import render_template, cached
-from pyservice.permissions import auth, admin 
-from pyservice.extensions import db, restapi
+from pyservice.extensions import db, restapi, admin
 
-from pyservice.models import Employee, Department, Job, Item
-from pyservice.forms import EmployeeForm, DepartmentForm, JobForm, ItemForm
+from pyservice.models import Employee, Department, Job, ItemGroup, Item
+from pyservice.forms import EmployeeForm, DepartmentForm, JobForm
 
 hr = Module(__name__)
 
@@ -41,10 +44,11 @@ def main():
 @hr.route("/employee/", methods=("GET","POST"))
 def employee():
     employee = Employee()
+    employee.query.all()
     showfields = (("emp_code", _("Employee Code")), ("emp_name", _("Employee")), 
         ("job", _("Job")), ("department", _("Department")), ("level", _("Level")), ("manager", _("Manager")), 
         ("gender", _("Gender")), ("id_card", _("ID Card")))
-    return render_template("list.html", folder="hr", link="hr.employee", showfields=showfields, table=employee.joinall())
+    return render_template("list.html", folder="hr", link="hr.employee", showfields=showfields, table=employee.query.all())
 
 @hr.route("/employee/edit=<int:id>/", methods=("GET","POST"))
 def employee_edit(id):
@@ -166,40 +170,3 @@ def job_delete(id):
     if job:
         job.delete()
     return redirect(url_for("hr.job"))
-
-@hr.route("/item/", methods=("GET","POST"))
-def item():
-    item = Item()
-    showfields = (("item_id", _("Item Id")), ("item_order", _("Item Order")), ("item_name", _("Item Name")), ("group_id", _("Group ID")), ("group_name", _("Group Name")))
-    return render_template("list.html", folder="hr", link="hr.item", showfields=showfields, table=item.joinall())
-
-@hr.route("/item/edit=<int:id>/", methods=("GET","POST"))
-def item_edit(id):
-    # is add
-    if id==0:
-        item = Item()
-    # is edit
-    else:
-        item = Item.query.get(id)
-
-    form = ItemForm(next=request.args.get('next',None), obj=item)
-
-    if form.validate_on_submit():
-        form.populate_obj(item)
-        item.unique_id = item.group_id * 1000 + item.item_id
-        item.save()
-
-        next_url = form.next.data
-        if not next_url or next_url == request.path:
-            next_url = url_for('hr.main')
-
-        return redirect(url_for('hr.item'))
-
-    return render_template("hr/item.html", form=form)
-
-@hr.route("/item/delete=<int:id>/", methods=("GET","POST"))
-def item_delete(id):
-    item = Item.query.get(id)
-    if item:
-        item.delete()
-    return redirect(url_for("hr.item"))

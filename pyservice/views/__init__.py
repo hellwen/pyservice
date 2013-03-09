@@ -1,1 +1,1 @@
-#!/usr/bin/env pythonfrom .frontend import frontendfrom .sales import salesfrom .hr import hrfrom .account import accountfrom .footer import footer
+#!/usr/bin/env pythonfrom .frontend import frontendfrom .base import basefrom .sales import salesfrom .hr import hrfrom .account import accountfrom .footer import footer

@@ -1,5 +1,12 @@
-{% extends theme("layout.html") %}
+{% extends "layout.html" %}
 {% from "macros/_forms.html" import render_field %}
+
+{%- block js %}
+    {{ super() }}
+    <script type="text/javascript" language="javascript">
+
+    </script>
+{%- endblock %}
 
 {%- block sidebar %}
 <div class="sidebar">
@@ -44,7 +51,7 @@
                 </tr>
                 <tr>
                     {{ render_field(form.fetch_date, readonly=true) }}
-                    {{ render_field(form.mend_property_id, readonly=true) }}                    
+                    {{ render_field(form.mend_property_id, disabled=true) }}
                 </tr>
                 <!-- 维修信息 -->
                 <tr>

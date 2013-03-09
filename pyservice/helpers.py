@@ -16,7 +16,7 @@ from datetime import datetime
 
 from flask import current_app, g
 from flaskext.babel import gettext, ngettext, format_date, format_datetime
-from flaskext.themes import render_theme_template 
+from flaskext.themes import render_theme_template
 
 from pyservice.extensions import cache
 

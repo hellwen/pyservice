@@ -16,89 +16,48 @@ from flask.ext.babel import gettext, lazy_gettext as _
 from pyservice.extensions import db
 from pyservice.models import Employee
 
-from .validators import is_username
+class DepartmentForm(Form):
+    dept_name = TextField(_("Dept Name"), validators=[
+                      required(message=\
+                        _("You must provide an department name"))])
+    description = TextAreaField(_("Description"))
+
+
+class JobForm(Form):
+    job_name = TextField(_("Job Name"), validators=[
+                      required(message=_("You must provide an job name"))])
+    description = TextAreaField(_("Description"))
+
+GENDER_LIST = [
+    ('male', 'Male'),
+    ('female', 'Female'),
+    ('other', 'Other'),
+]
 
 class EmployeeForm(Form):
 
     emp_code = TextField(_("Employee Code"), validators=[
                       required(message=_("You must provide an employee code"))])
-    emp_name = TextField(_("Name"), validators=[
+    emp_name = TextField(_("Employee Name"), validators=[
                       required(message=_("You must provide an employee name"))])
-    work_addr = TextField(_("Working Address"))
     work_email = TextField(_("Work Email"))
     work_phone = TextField(_("Work Phone"))
     work_mobile = TextField(_("Work Mobile"))
     office_location = TextField(_("Office Location"))  
-    related_user = SelectField(_("Related User"), default=0, coerce=int, validators=[optional()])
 
-    remark = TextAreaField(_("Reamrk"))
-    
     # postion
-    department = SelectField(_("Department"), default=0, coerce=int, validators=[
-                          required(message=_("You must choices a department"))])
-    job = SelectField(_("Job"), default=0, coerce=int, validators=[
-                          required(message=_("You must choices a job"))])
-    level = SelectField(_("Level"), default=0, coerce=int, validators=[optional()],
-        choices=[(0, ""),(1,"1"),(2,"2"),(3,"3"),(4,"4"),(5,"5"),(6,"6"),(7,"7"),(8,"8"),(9,"9")])
-    manager = SelectField(_("Mnager"), default=0, coerce=int, validators=[optional()])
-    is_manager = BooleanField(_('Is a Mnager'))
-
+    # department = SelectField(_("Department"), default=0, coerce=int, validators=[
+    #                       required(message=_("You must choices a department"))])
+    # job = SelectField(_("Job"), default=0, coerce=int, validators=[
+    #                       required(message=_("You must choices a job"))])
     ## personal info
-    # status
-    gender_id = SelectField(_("Gender"), coerce=int, validators=[
+    gender_id = SelectField(_("Gender"), choices=GENDER_LIST, validators=[
                           required(message=_("You must choices a Gender"))])
-    marital_id = SelectField(_("Marital Status"), coerce=int, validators=[
-                          required(message=_("You must choices a Marital Status"))])
-    num_children = IntegerField(_("Number of Children"), default=0)
-    # contact
+    # marital_id = SelectField(_("Marital Status"), coerce=int, validators=[
+    #                       required(message=_("You must choices a Marital Status"))])
     id_card = TextField(_("ID Card"))
     home_addr = TextField(_("Home Address"))
-    # birth
     date_of_birth = DateField(_("Date of Birth"), validators=[optional()], description=_("2013-01-01"))
     place_of_birth = TextField(_("Place of Birth"))
 
-    next = HiddenField()
-
-    submit = SubmitField(_("Save"))
-
-
-class DepartmentForm(Form):
-
-    dept_name = TextField(_("Name"), validators=[
-                      required(message=\
-                        _("You must provide an department name"))])
-    manager = SelectField(_("Manager"), default=0, coerce=int, validators=[optional()])
-    parent_id = SelectField(_("Parent Department"), default=0, coerce=int, validators=[optional()])
-
-    next = HiddenField()
-
-    submit = SubmitField(_("Save"))
-
-
-class JobForm(Form):
-
-    job_name = TextField(_("Name"), validators=[
-                      required(message=_("You must provide an job name"))])
-    department_id = SelectField(_("Department"), default=0, coerce=int, validators=[optional()])
-    description = TextAreaField(_("Description"))
-
-    next = HiddenField()    
-
-    submit = SubmitField(_("Save"))
-
-class ItemForm(Form):
-
-    item_id = TextField(_("Item ID"), validators=[
-                      required(message=_("You must provide"))])
-    item_order = TextField(_("Item Order"), validators=[
-                      required(message=_("You must provide"))])    
-    item_name = TextField(_("Item Name"), validators=[
-                      required(message=_("You must provide"))])
-    group_id = TextField(_("Group ID"), validators=[
-                      required(message=_("You must provide"))])
-    group_name = TextField(_("Group Name"), validators=[
-                      required(message=_("You must provide"))])
-
-    next = HiddenField()
-
-    submit = SubmitField(_("Save"))
+    remark = TextAreaField(_("Reamrk"))

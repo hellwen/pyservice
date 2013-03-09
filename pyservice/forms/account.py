@@ -19,44 +19,30 @@ from pyservice.models import User
 from .validators import is_username
 
 class LoginForm(Form):
-
-    login = TextField(_("Username or email address"), validators=[
-                      required(message=\
-                               _("You must provide an email or username"))])
-
-    password = PasswordField(_("Password"))
-
+    login = TextField(_("Username"), validators=[
+                      required(message=_("You must provide an email or username"))])
+    password = PasswordField(_("Password"), validators=[
+                      required(message=_("You must provide an password"))])
     remember = BooleanField(_("Remember me"))
-
     next = HiddenField()
-
     submit = SubmitField(_("Login"))
 
-
 class SignupForm(Form):
-
     username = TextField(_("Username"), validators=[
                          required(message=_("Username required")), 
                          is_username])
-
     nickname = TextField(_("Nickname"), validators=[
                          required(message=_("Nickname required"))])
-
     password = PasswordField(_("Password"), validators=[
                              required(message=_("Password required"))])
-
     password_again = PasswordField(_("Password again"), validators=[
                                    equal_to("password", message=\
                                             _("Passwords don't match"))])
-
     email = TextField(_("Email address"), validators=[
                       required(message=_("Email address required")), 
                       email(message=_("A valid email address is required"))])
-
     code = TextField(_("Signup Code"))
-
     next = HiddenField()
-
     submit = SubmitField(_("Signup"))
 
     def validate_username(self, field):
@@ -68,7 +54,6 @@ class SignupForm(Form):
         user = User.query.filter(User.email.like(field.data)).first()
         if user:
             raise ValidationError, gettext("This email is taken")
-
 
 class RecoverPasswordForm(Form):
 

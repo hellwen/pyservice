@@ -1,64 +1,70 @@
-{% extends theme("layout.html") %}
+{% extends module + "/main.html" %}
 
-{%- block js %}
-    {{ super() }}
-    <script type="text/javascript" language="javascript">
-        $(document).ready(function() {
-            $('#example').tablesorter({
-                usNumberFormat : false,
-                sortReset      : true,
-                sortRestart    : true
-            });
-        });            
-    </script>
-{%- endblock %}
+{% block head %}
+    <link href="{{ url_for('admin.static', filename='select2/select2.css') }}" rel="stylesheet">
+    <link href="{{ url_for('admin.static', filename='css/datepicker.css') }}" rel="stylesheet">
+{% endblock %}
 
-{%- block sidebar %}
-<div class="sidebar">
-    {% include folder + "/_sidebar.html" %}
-</div>
-{%- endblock %}
-
-{%- block topbar %}
-<div class="topbar">
-    {% include folder + "/_topbar.html" %}
-</div>
-{%- endblock %}
-
-{% block content %}
-<div class="content">
-    {%- if showfields and table %}
-        <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+{% block body %}
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#">{{ _('List') }} ({{ count }})</a>
+        </li>
+        <li>
+            <a href="{{ url_for(model + '_create', url=return_url) }}">{{ _('Create') }}</a>
+        </li>
+    </ul>
+    <table class="table table-striped table-bordered model-list">
         <thead>
             <tr>
-                <th></th>
-                {%- for field in showfields %}
-                <th>{{ field[1] }}</th>
-                {%- endfor %}
+                {% block list_header scoped %}
+                    <th class="span1">&nbsp;</th>
+                    {% set column = 0 %}
+                    {% for c in list_columns %}
+                    <th>
+                        {{ c[1] }}
+                    </th>
+                    {% set column = column + 1 %}
+                    {% endfor %}
+                {% endblock %}
             </tr>
         </thead>
-        <tbody>
-            {%- for row in table %}
-            <tr>
-                {%- if row.id %}
+        {% for row in data %}
+        <tr>
+            {% block list_row scoped %}
+                {% if actions %}
                 <td>
-                    <div class="table_button">
-                        <a href="{{ url_for(link + '_edit', id=row.id) }}" id="edit">{{ _("Edit") }}</a>
-                        <a href="{{ url_for(link + '_delete', id=row.id) }}" id="delete">{{ _("Delete") }}</a>
-                    </div>
+                    <input type="checkbox" name="rowid" class="action-checkbox" value="{{ row.id }}" />
                 </td>
-                {%- endif %}
-                {%- for field in showfields %}
-                    {%- if row[field[0]] %}
-                        <td>{{ row[field[0]] }}</td>
+                {% endif %}
+                <td>
+                    {% block list_row_actions scoped %}
+                        <a class="icon" href="{{ url_for(model + '_edit', id=row.id, url=return_url) }}">
+                            <i class="icon-pencil"></i>
+                        </a>
+                        <form class="icon" method="POST" action="{{ url_for(model + '_delete', id=row.id, url=return_url) }}">
+                            <button onclick="return confirm('{{ _('You sure you want to delete this item?') }}');">
+                                <i class="icon-remove"></i>
+                            </button>
+                        </form>
+                    {% endblock %}
+                </td>
+
+                {% for c in list_columns %}
+                    {%- if row[c[0]] %}
+                        <td>{{ row[c[0]] }}</td>
                     {%- else %}
                         <td></td>
                     {%- endif %}
-                {%- endfor %}
-            </tr>
-            {%- endfor %}
-        </tbody>
-        </table>
-    {%- endif %}
-</div>
+                {% endfor %}
+            {% endblock %}
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block tail %}
+    <script src="{{ url_for('admin.static', filename='js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ url_for('admin.static', filename='js/form.js') }}"></script>
+    <script src="{{ url_for('admin.static', filename='js/filters.js') }}"></script>
 {% endblock %}

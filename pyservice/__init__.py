@@ -17,16 +17,16 @@ from werkzeug import parse_date
 from flask import Flask, g, session, request, flash, redirect, jsonify, url_for
 
 from flask.ext.babel import Babel, gettext as _
-from flask.ext.themes import setup_themes, load_themes_from
 from flask.ext.principal import Principal, RoleNeed, UserNeed, identity_loaded
 from flask.ext.uploads import configure_uploads
-from flask.ext.login import LoginManager
-import flask.ext.sqlalchemy
+from flask.ext.login import LoginManager, current_user
 
+from flask_debugtoolbar import DebugToolbarExtension
+from admin import Admin, AdminIndexView, expose
+import flask.ext.sqlalchemy
 from pyservice import views, helpers
-from pyservice.models import User, Job, Department
-from pyservice.extensions import db, mail, cache, photos, restapi, login_manager
-from pyservice.helpers import render_template
+from pyservice.models import User
+from pyservice.extensions import db, mail, cache, photos, restapi, login_manager, admin
 
 DEFAULT_APP_NAME = 'pyservice'
 
@@ -34,6 +34,7 @@ DEFAULT_MODULES = (
     (views.frontend, ""),
     (views.sales, "/sales"),
     (views.hr, "/hr"),
+    (views.base, "/base"),
     (views.account, "/account"),
     (views.footer, "/footer"),
 )
@@ -46,11 +47,13 @@ def create_app(config=None, modules=None):
     app = Flask(DEFAULT_APP_NAME)
 
     # config
-    app.config.from_pyfile(config)
+    if config is not None:
+        app.config.from_pyfile(config)
     
     configure_extensions(app)
-    
     configure_login(app)
+
+    configure_admin(app)
     configure_identity(app)
     configure_logging(app)
     configure_errorhandlers(app)
@@ -66,16 +69,15 @@ def create_app(config=None, modules=None):
 
     return app
 
-
 def configure_extensions(app):
     # configure extensions          
     db.init_app(app)
-    restapi.init_app(app, flask_sqlalchemy_db=db)
-    restapi.create_api(Job, collection_name="job", methods=['GET', 'POST', 'DELETE'])
-    restapi.create_api(Department, collection_name="department", methods=['GET', 'POST', 'DELETE'])
+    # restapi.init_app(app, flask_sqlalchemy_db=db)
+    # restapi.create_api(Job, collection_name="job", methods=['GET', 'POST', 'DELETE'])
+    # restapi.create_api(Department, collection_name="department", methods=['GET', 'POST', 'DELETE'])
     mail.init_app(app)
     cache.init_app(app)
-    setup_themes(app)
+    toolbar = DebugToolbarExtension(app)
 
 def configure_identity(app):
 
@@ -85,16 +87,32 @@ def configure_identity(app):
     def on_identity_loaded(sender, identity):
         g.user = User.query.from_identity(identity)
 
+def configure_admin(app):
+
+    # Create customized index view class
+    class MyAdminIndexView(AdminIndexView):
+        def is_accessible(self):
+            return current_user.is_authenticated()            
+
+        # @expose('/')
+        # def index(self):
+        #     arg1 = 'Hello'
+        #     return render_template('index.html', arg1=arg1)            
+
+    admin.init_app(app)
+    admin.name = DEFAULT_APP_NAME
+    admin.index_view = MyAdminIndexView(url="/")
+
 def configure_login(app):
     login_manager.setup_app(app)
     # login_manager.login_view = "login"
     # login_manager.login_message = u"Please log in to access this page."
     # login_manager.refresh_view = "reauth"
-    # login_manager.setup_app(app)
 
     @login_manager.user_loader
     def load_user(userid):
-        return User.query.filter_by(id=userid).first()  
+        return User.query.filter_by(id=userid).first()
+        # return User.get(userid)
 
 def configure_i18n(app):
 
@@ -219,19 +237,19 @@ def configure_errorhandlers(app):
     def forbidden(error):
         if request.is_xhr:
             return jsonify(error=_('Sorry, page not allowed'))
-        return render_template("errors/403.html", error=error)
+        return helpers.render_template("errors/403.html", error=error)
 
     @app.errorhandler(404)
     def page_not_found(error):
         if request.is_xhr:
             return jsonify(error=_('Sorry, page not found'))
-        return render_template("errors/404.html", error=error)
+        return helpers.render_template("errors/404.html", error=error)
 
     @app.errorhandler(500)
     def server_error(error):
         if request.is_xhr:
             return jsonify(error=_('Sorry, an error has occurred'))
-        return render_template("errors/500.html", error=error)
+        return helpers.render_template("errors/500.html", error=error)
 
 
 def configure_modules(app, modules):

@@ -1,20 +1,27 @@
 <!-- 构建一个field -->
 {% macro render_field(field) %}
-    <th>{{ field.label }}{% if field.flags.required %}*{% endif %}</th>
-    <td>{{ field(**kwargs) | safe }}
-    {{ render_tip(field) }}
-    {{ render_errors(field) }}
-    </td>
+    <div class="control-group">
+        <label class="control-label">{{ field.label }}</label>
+        <div class="controls">
+        <td>{{ field(**kwargs) | safe }}
+        {% if field.flags.required %}*{% endif %}
+        {{ render_tip(field) }}
+        {{ render_errors(field) }}
+        </div>
+    </div>
 {% endmacro %}
 
 <!-- 构建错误信息 -->
 {% macro render_errors(field) %}
     {% if field.errors %}
-    <ul class="errors">
-        {% for error in field.errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
+    <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <ul>
+            {% for error in field.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}      
+        </ul>
+    </div>
     {% endif %}
 {% endmacro %}
 

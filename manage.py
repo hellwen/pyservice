@@ -3,23 +3,25 @@
 
 import uuid
 
-from flask import Flask, current_app
+from flask import Flask
 from flask.ext.script import Server, Shell, Manager, Command, prompt_bool
 
 from pyservice import create_app
 from pyservice.extensions import db
-from pyservice.models import Item
+
+from pyservice.models import Item, User
 
 manager = Manager(create_app('config.cfg'))
 
-manager.add_command("runserver", Server('0.0.0.0',port=8080))
-
+# 添加shell中支持的环境
 def _make_context():
     return dict(db=db)
+
 manager.add_command("shell", Shell(make_context=_make_context))
+manager.add_command("runserver", Server('0.0.0.0',port=8080))
 
 @manager.command
-def createall():
+def syncdb():
     "Creates database tables"
     db.create_all()
     # db.session.execute(" \
@@ -34,13 +36,9 @@ def dropall():
         db.drop_all()
 
 @manager.command
-def initialize():
-    "Initialize base information"
-
-    if prompt_bool("Are you sure ? You will lose all your data !"):
-        # db.drop_all()
-        # db.create_all()
-
+def populate(default_data=False, sample_data=False):
+    "Populate database with default data"
+    if default_data:
         # 
         db.session.execute("delete from items")
         db.session.add(Item(1, u'性别', 1001, 1, u'男'))
@@ -86,6 +84,12 @@ def initialize():
         db.session.add(Item(23, u'用户类型', 23002, 2, u'延保用户'))
 
         db.session.commit()
+
+    # if sample_data:
+    #     from fixtures.sample_data import all
+    #     sample_data = dbfixture.data(*all)
+    #     sample_data.setup()
+
 
 @manager.command
 def createadmin():
