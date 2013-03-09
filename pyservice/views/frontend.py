@@ -15,17 +15,12 @@ try:
 except:
     from cgi import parse_qsl
 
-from flask import Module, Response, request, flash, jsonify, g, current_app,\
-    abort, redirect, url_for, session
-
+from flask import Module
 from flaskext.babel import gettext as _
 
-from pyservice.helpers import render_template, cached
+from pyservice.helpers import render_template
 from pyservice.extensions import db
 from flask.ext.login import login_required
-
-from pyservice.models import User, Employee
-from pyservice.forms import LoginForm, SignupForm
 
 frontend = Module(__name__)
 
@@ -36,5 +31,6 @@ def index():
     return render_template("index.html")
 
 @frontend.route("/about", methods=("GET","POST"))
+@login_required
 def about():
     return render_template("about.html")

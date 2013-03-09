@@ -17,7 +17,6 @@ from werkzeug import parse_date
 from flask import Flask, g, session, request, flash, redirect, jsonify, url_for
 
 from flask.ext.babel import Babel, gettext as _
-from flask.ext.principal import Principal, RoleNeed, UserNeed, identity_loaded
 from flask.ext.uploads import configure_uploads
 from flask.ext.login import LoginManager, current_user
 
@@ -52,10 +51,8 @@ def create_app(config=None, modules=None):
     configure_extensions(app)
     configure_login(app)
 
-    configure_identity(app)
     configure_logging(app)
     configure_errorhandlers(app)
-    configure_before_handlers(app)
     configure_template_filters(app)
     # configure_context_processors(app)
     configure_uploads(app, (photos,))
@@ -76,14 +73,6 @@ def configure_extensions(app):
     mail.init_app(app)
     cache.init_app(app)
     toolbar = DebugToolbarExtension(app)
-
-def configure_identity(app):
-
-    principal = Principal(app)
-
-    @identity_loaded.connect_via(app)
-    def on_identity_loaded(sender, identity):
-        g.user = User.query.from_identity(identity)
 
 def configure_login(app):
     login_manager.setup_app(app)
@@ -197,14 +186,6 @@ def configure_template_filters(app):
     @app.template_filter()
     def gistcode(html):
         return helpers.gistcode(html)
-
-
-def configure_before_handlers(app):
-
-    @app.before_request
-    def authenticate():
-        g.user = getattr(g.identity, 'user', None)
-
 
 def configure_errorhandlers(app):
     

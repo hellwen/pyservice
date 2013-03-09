@@ -1,1 +1,1 @@
-#!/usr/bin/env pythonfrom .account import LoginForm, SignupForm, RecoverPasswordForm, \            ChangePasswordForm, DeleteAccountFormfrom .employee import EmployeeForm, DepartmentForm, JobFormfrom .base import ItemFormfrom .sales import MountMendForm, MountMendFeedbackForm
+#!/usr/bin/env pythonfrom .account import LoginForm, UserFormfrom .employee import EmployeeForm, DepartmentForm, JobFormfrom .base import ItemFormfrom .sales import MountMendForm, MountMendFeedbackForm

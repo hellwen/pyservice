@@ -8,8 +8,8 @@
     :license: BSD, see LICENSE for more details.
 """
 from flask.ext.wtf import Form, TextAreaField, HiddenField, BooleanField, \
-        PasswordField, SubmitField, TextField, ValidationError, \
-        required, email, equal_to, regexp
+        PasswordField, SubmitField, TextField, ValidationError, SelectField, \
+        required, optional, equal_to, regexp
 
 from flask.ext.babel import gettext, lazy_gettext as _ 
 
@@ -27,68 +27,27 @@ class LoginForm(Form):
     next = HiddenField()
     submit = SubmitField(_("Login"))
 
-class SignupForm(Form):
+ROLE_LIST = (
+    (100, _('Member')),
+    (200, _('Admin')),
+)
+
+class UserForm(Form):
+
     username = TextField(_("Username"), validators=[
-                         required(message=_("Username required")), 
-                         is_username])
-    nickname = TextField(_("Nickname"), validators=[
-                         required(message=_("Nickname required"))])
+                         required(message=_("Username required"))])
+
     password = PasswordField(_("Password"), validators=[
                              required(message=_("Password required"))])
-    password_again = PasswordField(_("Password again"), validators=[
-                                   equal_to("password", message=\
-                                            _("Passwords don't match"))])
-    email = TextField(_("Email address"), validators=[
-                      required(message=_("Email address required")), 
-                      email(message=_("A valid email address is required"))])
-    code = TextField(_("Signup Code"))
+
+    # password_again = PasswordField(_("Password again"), validators=[
+    #                                equal_to("password", message=\
+    #                                         _("Passwords don't match"))])
+
+    role = SelectField(_("Role"), choices=ROLE_LIST, validators=[optional])
+
+    employee_id = SelectField(_("Relation Employee"), validators=[optional])
+
     next = HiddenField()
+
     submit = SubmitField(_("Signup"))
-
-    def validate_username(self, field):
-        user = User.query.filter(User.username.like(field.data)).first()
-        if user:
-            raise ValidationError, gettext("This username is taken")
-
-    def validate_email(self, field):
-        user = User.query.filter(User.email.like(field.data)).first()
-        if user:
-            raise ValidationError, gettext("This email is taken")
-
-class RecoverPasswordForm(Form):
-
-    email = TextField("Your email address", validators=[
-                      email(message=_("A valid email address is required"))])
-
-    submit = SubmitField(_("Find password"))
-
-
-class ChangePasswordForm(Form):
-
-    password_old = PasswordField(_("Password"), validators=[
-                             required(message=_("Password is required"))])
-
-    password = PasswordField(_("New Password"), validators=[
-                             required(message=_("New Password is required"))])
-    
-    password_again = PasswordField(_("Password again"), validators=[
-                                   equal_to("password", message=\
-                                            _("Passwords don't match"))])
-
-    submit = SubmitField(_("Save"))
-
-
-class DeleteAccountForm(Form):
-    
-    recaptcha = TextField(_("Recaptcha"))
-
-    submit = SubmitField(_("Delete"))
-
-
-class TwitterForm(Form):
-
-    content = TextAreaField(_("Content"), validators=[
-                        required(message=_("Content is required"))])
-
-    submit = SubmitField(_("Send"))
-

@@ -10,46 +10,19 @@ import hashlib
 
 from datetime import datetime
 
-from werkzeug import cached_property
-
 from flask import abort, current_app
 
 from flask.ext.sqlalchemy import BaseQuery
-from flask.ext.principal import RoleNeed, UserNeed, Permission
 from flask.ext.login import UserMixin
 
 from pyservice.extensions import db, cache
-from pyservice.permissions import admin_permission
 from .employees import Employee
 
 class UserQuery(BaseQuery):
 
-    def from_identity(self, identity):
-        """
-        Loads user from flaskext.principal.Identity instance and
-        assigns permissions from user.
-
-        A "user" instance is monkeypatched to the identity instance.
-
-        If no user found then None is returned.
-        """
-
-        try:
-            user = self.get(int(identity.name))
-        except ValueError:
-            user = None
-
-        if user:
-            identity.provides.update(user.provides)
-
-        identity.user = user
-
-        return user
-    
     def authenticate(self, login, password):
         
-        user = self.filter(db.or_(User.username==login,
-                                  User.email==login)).first()
+        user = self.filter(User.username==login).first()
 
         if user:
             authenticated = user.check_password(password)
@@ -58,73 +31,33 @@ class UserQuery(BaseQuery):
 
         return user, authenticated
 
-    def search(self, key):
-        query = self.filter(db.or_(User.email==key,
-                                   User.nickname.ilike('%'+key+'%'),
-                                   User.username.ilike('%'+key+'%')))
-        return query
-
-    def get_by_username(self, username):
-        user = self.filter(User.username==username).first()
-        if user is None:
-            abort(404)
-        return user
-
-
 class User(db.Model, UserMixin):
 
     query_class = UserQuery
-
-    PER_PAGE = 50
-    TWEET_PER_PAGE = 30
     
     MEMBER = 100
-    MODERATOR = 200
-    ADMIN = 300
-    
+    ADMIN = 200
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
-    nickname = db.Column(db.String(20))
-    email = db.Column(db.String(100), unique=True, nullable=False)
     _password = db.Column("password", db.String(80), nullable=False)
     role = db.Column(db.Integer, default=MEMBER)
-    activation_key = db.Column(db.String(40))
     employee_id = db.Column(db.Integer, db.ForeignKey(Employee.id))
     employee = db.relationship(Employee, foreign_keys=employee_id, backref='emp')
-
-    date_joined = db.Column(db.DateTime, default=datetime.utcnow)
-    last_login = db.Column(db.DateTime, default=datetime.utcnow)
-    last_request = db.Column(db.DateTime, default=datetime.utcnow)
     active = db.Column(db.Boolean, default=True)
 
-    class Permissions(object):
-        
-        def __init__(self, obj):
-            self.obj = obj
-    
-        @cached_property
-        def edit(self):
-            return Permission(UserNeed(self.obj.id)) & admin
-  
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
 
-    def __init__(self, username, nickname, email, role):
-        self.username = username
-        self.nickname = nickname
-        self.email = email
-        self.role = role
+    # def __init__(self, username, nickname, email, role):
+    #     self.username = username
+    #     self.nickname = nickname
+    #     self.email = email
+    #     self.role = role
 
     def __str__(self):
-        return self.nickname
+        return self.username
     
-    def __repr__(self):
-        return "<%s>" % self
-    
-    @cached_property
-    def permissions(self):
-        return self.Permissions(self)
-  
     def _get_password(self):
         return self._password
     
@@ -139,24 +72,4 @@ class User(db.Model, UserMixin):
         if self.password is None:
             return False        
         return self.password == hashlib.md5(password).hexdigest()
-    
-    @cached_property
-    def provides(self):
-        needs = [RoleNeed('authenticated'),
-                 UserNeed(self.id)]
-
-        if self.is_moderator:
-            needs.append(RoleNeed('moderator'))
-
-        if self.is_admin:
-            needs.append(RoleNeed('admin'))
-
-        return needs
-    
-    @property
-    def is_moderator(self):
-        return self.role >= self.MODERATOR
-
-    @property
-    def is_admin(self):
-        return self.role >= self.ADMIN
+   
