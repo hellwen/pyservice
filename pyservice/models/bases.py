@@ -28,6 +28,7 @@ class ItemGroup(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey(ItemGroup.id), nullable=False)
+    group = db.relationship('ItemGroup', foreign_keys=group_id, backref='itemgoup')
     item_id = db.Column(db.Integer, nullable=False, unique=True)
     item_order = db.Column(db.Integer, default=0)
     item_name = db.Column(db.String(50), nullable=False)
