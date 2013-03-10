@@ -20,14 +20,8 @@ from flask import Module, Response, request, flash, jsonify, g, current_app,\
     abort, redirect, url_for, session
 
 from flask.ext.babel import gettext as _
-from flask.ext.principal import identity_changed, Identity, AnonymousIdentity
-from flask.ext.login import (LoginManager, current_user, login_required,                                                                                                                                
-                             login_user, logout_user, UserMixin,
-                             confirm_login, fresh_login_required)
 from flask.ext import wtf
-from flask.ext.wtf import Form, TextAreaField, HiddenField, BooleanField, SubmitField, \
-        IntegerField, SelectField, DateField, TextField, ValidationError, \
-        required, optional, email, equal_to, regexp, QuerySelectField
+from flask.ext.wtf import Form
 
 from pyservice.helpers import render_template, cached
 from pyservice.extensions import db, restapi

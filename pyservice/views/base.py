@@ -9,13 +9,14 @@
 import datetime
 import os, sys
 
-from flask import Module
+from flask import Module, request
 from flask.ext.babel import gettext as _
 from flask.ext import wtf
 
 from pyservice.extensions import db
 from pyservice.helpers import render_template
 from pyservice.models import ItemGroup, Item
+from pyservice.forms import ItemForm
 
 base = Module(__name__)
 
@@ -25,9 +26,9 @@ def main():
 
 @base.route("/item/", methods=("GET","POST"))
 def item():
-    item = Item()
-    showfields = (("item_id", _("Item Id")), ("item_order", _("Item Order")), ("item_name", _("Item Name")), ("group_id", _("Group ID")), ("group_name", _("Group Name")))
-    return render_template("list.html", folder="hr", link="hr.item", showfields=showfields, table=item.joinall())
+    data = Item.query.all()
+    list_columns = (("item_order", _("Item Order")), ("item_name", _("Item Name")), ("group_id", _("Group ID")), ("group_name", _("Group Name")))
+    return render_template("list.html", module="base", model="item", list_columns=list_columns, data=data)    
 
 @base.route("/item/edit=<int:id>/", methods=("GET","POST"))
 def item_edit(id):

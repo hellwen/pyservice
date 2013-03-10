@@ -11,7 +11,7 @@
             <a href="#">{{ _('List') }} ({{ count }})</a>
         </li>
         <li>
-            <a href="{{ url_for(model + '_create', url=return_url) }}">{{ _('Create') }}</a>
+            <a href="{{ url_for(model + '_edit', id=0, url=return_url) }}">{{ _('Create') }}</a>
         </li>
     </ul>
     <table class="table table-striped table-bordered model-list">

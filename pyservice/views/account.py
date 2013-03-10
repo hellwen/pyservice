@@ -19,9 +19,6 @@ from flask import Module, Response, request, flash, jsonify, g, current_app,\
     abort, redirect, url_for, session
 
 from flaskext.babel import gettext as _
-from flask.ext.login import (LoginManager, current_user, login_required,                                                                                                                                
-                             login_user, logout_user, UserMixin,
-                             confirm_login, fresh_login_required)
 
 from pyservice.helpers import render_template, cached
 from pyservice.extensions import db
@@ -69,19 +66,18 @@ def logout():
 @account.route("/user/", methods=("GET","POST"))
 def user():
     data = User.query.all()
-    list_columns = (("username", _("User Name")), ("nickname", _("Nick Name")))
+    list_columns = (("username", _("User Name")),)
     return render_template("list.html", module="account", model="user", list_columns=list_columns, data=data)
 
 @account.route("/user/create/", methods=("GET","POST"))
 def user_create():
     form = UserForm(next=request.args.get('next',None))
 
-    form.employee_id.choices = [(0, "")]
-    form.employee_id.choices.extend([(g.id, g.dept_name) for g in Employee.query.filter_by(active=True).order_by('emp_name')])
+    # form.employee.choices = [(1, "1"),]
+    # form.employee.choices.extend([(g.id, g.dept_name) for g in Employee.query.filter_by(active=True).order_by('emp_name')])
 
     if form.validate_on_submit():
-
-        user = User(role=100)
+        user = User()
         form.populate_obj(user)
 
         db.session.add(user)
