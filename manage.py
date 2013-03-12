@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-import uuid
-
-from flask import Flask
-from flask.ext.script import Server, Shell, Manager, Command, prompt_bool
+from flask.ext.script import Server, Shell, Manager, prompt_bool
 
 from pyservice import create_app
 from pyservice.extensions import db
@@ -13,12 +10,14 @@ from pyservice.models import Item, User
 
 manager = Manager(create_app('config.cfg'))
 
+
 # 添加shell中支持的环境
 def _make_context():
     return dict(db=db)
 
 manager.add_command("shell", Shell(make_context=_make_context))
-manager.add_command("runserver", Server('0.0.0.0',port=8080))
+manager.add_command("runserver", Server('0.0.0.0', port=8080))
+
 
 @manager.command
 def syncdb():
@@ -28,18 +27,18 @@ def syncdb():
     #         create unique index idx_items on items(group_id, item_id) \
     #         ")
 
+
 @manager.command
 def dropall():
     "Drops all database tables"
-    
     if prompt_bool("Are you sure ? You will lose all your data !"):
         db.drop_all()
+
 
 @manager.command
 def populate(default_data=False, sample_data=False):
     "Populate database with default data"
     if default_data:
-        # 
         db.session.execute("delete from items")
         db.session.add(Item(1, u'性别', 1001, 1, u'男'))
         db.session.add(Item(1, u'性别', 1002, 2, u'女'))
@@ -98,33 +97,6 @@ def createadmin():
     admin.password = "admin"
     db.session.add(admin)
     db.session.commit()
-
-@manager.option('-r', '--role', dest='role', default="member")
-@manager.option('-n', '--number', dest='number', default=1, type=int)
-def createcode(role, number):
-    codes = []
-    usercodes = []
-    for i in range(number):
-        code = unicode(uuid.uuid4()).split('-')[0]
-        codes.append(code)
-        usercode = UserCode()
-        usercode.code = code
-        if role == "admin":
-            usercode.role = User.ADMIN
-        elif role == "moderator":
-            usercode.role = User.MODERATOR
-        else:
-            usercode.role = User.MEMBER
-        usercodes.append(usercode)
-    if number==1:
-        db.session.add(usercode)
-    else:
-        db.session.add_all(usercodes)
-    db.session.commit()
-    print "Sign up code:"
-    for i in codes:
-        print i
-    return
 
 
 if __name__ == "__main__":
