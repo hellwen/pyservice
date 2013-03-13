@@ -7,30 +7,31 @@
 
     :license: BSD, see LICENSE for more details.
 """
-from flask import Flask, request, flash, redirect, jsonify, url_for
+from flask import Flask, request, flash, redirect, jsonify, url_for, g,\
+    render_template
 
 from flask.ext.babel import Babel, gettext as _
-# from flask_debugtoolbar import DebugToolbarExtension
 
-from pyservice import views, helpers
-from pyservice.extensions import db, cache
+from pyservice.views import frontend
+from hr.views import hr
+from sales.views import sales
+from account.views import account
+from pyservice.extensions import db
 
 DEFAULT_APP_NAME = 'pyservice'
 
 DEFAULT_MODULES = (
-    (views.frontend, ""),
-    (views.sales, "/sales"),
-    (views.hr, "/hr"),
-    (views.base, "/base"),
-    (views.account, "/account"),
-    (views.footer, "/footer"),
+    (frontend, "/"),
+    (sales, "/sales"),
+    (hr, "/hr"),
+    (account, "/account"),
 )
 
 
-def create_app(config=None, modules=None):
+def create_app(config=None, blueprints=None):
 
-    if modules is None:
-        modules = DEFAULT_MODULES
+    if blueprints is None:
+        blueprints = DEFAULT_MODULES
 
     app = Flask(DEFAULT_APP_NAME)
 
@@ -42,22 +43,15 @@ def create_app(config=None, modules=None):
     configure_errorhandlers(app)
     configure_i18n(app)
 
-    # register module
-    configure_modules(app, modules)
+    # register blueprint
+    configure_blueprints(app, blueprints)
 
     return app
 
 
 def configure_extensions(app):
-    # configure extensions
+
     db.init_app(app)
-    # restapi.init_app(app, flask_sqlalchemy_db=db)
-    # restapi.create_api(Job, collection_name="job",
-    #     methods=['GET', 'POST', 'DELETE'])
-    # restapi.create_api(Department, collection_name="department",
-    #     methods=['GET', 'POST', 'DELETE'])
-    cache.init_app(app)
-    # toolbar = DebugToolbarExtension(app)
 
 
 def configure_i18n(app):
@@ -66,8 +60,21 @@ def configure_i18n(app):
 
     @babel.localeselector
     def get_locale():
-        accept_languages = app.config.get('ACCEPT_LANGUAGES', ['en', 'zh'])
+        # if a user is logged in, use the locale from the user settings
+        user = getattr(g, 'user', None)
+        if user is not None:
+            return user.locale
+        # otherwise try to guess the language from the user accept
+        # header the browser transmits.  We support de/fr/en in this
+        # example.  The best match wins.
+        accept_languages = app.config.get('ACCEPT_LANGUAGES')
         return request.accept_languages.best_match(accept_languages)
+
+    @babel.timezoneselector
+    def get_timezone():
+        user = getattr(g, 'user', None)
+        if user is not None:
+            return user.timezone
 
 
 def configure_errorhandlers(app):
@@ -83,22 +90,22 @@ def configure_errorhandlers(app):
     def forbidden(error):
         if request.is_xhr:
             return jsonify(error=_('Sorry, page not allowed'))
-        return helpers.render_template("errors/403.html", error=error)
+        return render_template("errors/403.html", error=error)
 
     @app.errorhandler(404)
     def page_not_found(error):
         if request.is_xhr:
             return jsonify(error=_('Sorry, page not found'))
-        return helpers.render_template("errors/404.html", error=error)
+        return render_template("errors/404.html", error=error)
 
     @app.errorhandler(500)
     def server_error(error):
         if request.is_xhr:
             return jsonify(error=_('Sorry, an error has occurred'))
-        return helpers.render_template("errors/500.html", error=error)
+        return render_template("errors/500.html", error=error)
 
 
-def configure_modules(app, modules):
+def configure_blueprints(app, blueprints):
 
-    for module, url_prefix in modules:
-        app.register_module(module, url_prefix=url_prefix)
+    for blueprint, url_prefix in blueprints:
+        app.register_blueprint(blueprint, url_prefix=url_prefix)

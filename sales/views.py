@@ -7,14 +7,14 @@
 """
 import datetime
 
-from flask import Module, request, redirect, url_for, render_template
+from flask import Blueprint, request, redirect, url_for, render_template
 
 from flaskext.babel import gettext as _
 
 from pyservice.models import MountMend, Employee, Item, Department
 from pyservice.forms import MountMendForm, MountMendFeedbackForm
 
-sales = Module(__name__)
+sales = Blueprint('sales', __name__)
 
 
 @sales.route("/main", methods=("GET", "POST"))
