@@ -20,18 +20,8 @@ from pyservice.extensions import db
 
 DEFAULT_APP_NAME = 'pyservice'
 
-DEFAULT_MODULES = (
-    (frontend, "/"),
-    (sales, "/sales"),
-    (hr, "/hr"),
-    (account, "/account"),
-)
-
 
 def create_app(config=None, blueprints=None):
-
-    if blueprints is None:
-        blueprints = DEFAULT_MODULES
 
     app = Flask(DEFAULT_APP_NAME)
 
@@ -44,7 +34,7 @@ def create_app(config=None, blueprints=None):
     configure_i18n(app)
 
     # register blueprint
-    configure_blueprints(app, blueprints)
+    configure_blueprints(app)
 
     return app
 
@@ -105,7 +95,9 @@ def configure_errorhandlers(app):
         return render_template("errors/500.html", error=error)
 
 
-def configure_blueprints(app, blueprints):
+def configure_blueprints(app):
 
-    for blueprint, url_prefix in blueprints:
-        app.register_blueprint(blueprint, url_prefix=url_prefix)
+        app.register_blueprint(frontend)
+        app.register_blueprint(sales)
+        app.register_blueprint(hr)
+        app.register_blueprint(account)

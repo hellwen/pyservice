@@ -8,18 +8,32 @@
 import datetime
 
 from flask import Blueprint, request, redirect, url_for, render_template
+from functools import wraps
 
 from flaskext.babel import gettext as _
 
 from pyservice.models import MountMend, Employee, Item, Department
 from pyservice.forms import MountMendForm, MountMendFeedbackForm
 
-sales = Blueprint('sales', __name__)
+sales = Blueprint('sales', __name__,
+                url_prefix="/sales",
+                template_folder='templates',
+                static_folder='static')
+
+
+def autorender(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        context = func(*args, **kwargs)
+        return render_template('%s/%s.html' % (sales.name, func.func_name),
+            **context)
+    return wrapper
 
 
 @sales.route("/main", methods=("GET", "POST"))
+@autorender
 def main():
-    return render_template("sales/main.html")
+    return {}
 
 
 @sales.route("/order", methods=("GET", "POST"))
