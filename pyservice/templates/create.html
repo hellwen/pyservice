@@ -1,32 +1,32 @@
-{% extends 'admin/master.html' %}
-{% import 'admin/lib.html' as lib with context %}
+{% extends 'main.html' %}
+{% import 'lib.html' as lib with context %}
 
 {% block head %}
-    <link href="{{ url_for('admin.static', filename='select2/select2.css') }}" rel="stylesheet">
-    <link href="{{ url_for('admin.static', filename='css/datepicker.css') }}" rel="stylesheet">
+    <link href="/static/select2/select2.css" rel="stylesheet">
+    <link href="/static/css/datepicker.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
-  <ul class="nav nav-tabs">
-      <li>
-          <a href="{{ return_url }}">{{ _gettext('List') }}</a>
-      </li>
-      <li class="active">
-          <a href="#">{{ _gettext('Create') }}</a>
-      </li>
-	</ul>
+    <ul class="nav nav-pills">
+        <li>
+            <a href="{{ formadmin.return_url }}">{{ _('List') }}</a>
+        </li>
+        <li class="active">
+            <a href="#">{{ _('Create') }}</a>
+        </li>
+  	</ul>
 
-  {% macro extra() %}
-    <input name="_add_another" type="submit" class="btn btn-large" value="{{ _gettext('Save and Add') }}" />
-  {% endmacro %}
+    {% macro extra() %}
+        <input name="_add_another" type="submit" class="btn btn-large" value="{{ _('Save and Add') }}" />
+    {% endmacro %}
 
-  {% call lib.form_tag() %}
-      {{ lib.render_form_fields(form) }}
-      {{ lib.render_form_buttons(return_url, extra()) }}
-  {% endcall %}
+    {% call lib.form_tag() %}
+        {{ lib.render_form_fields(formadmin.form) }}
+        {{ lib.render_form_buttons(formadmin.return_url, extra()) }}
+    {% endcall %}
 {% endblock %}
 
 {% block tail %}
-    <script src="{{ url_for('admin.static', filename='js/bootstrap-datepicker.js') }}"></script>
-    <script src="{{ url_for('admin.static', filename='js/form.js') }}"></script>
+    <script src="/static/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script src="/static/js/form.js" type="text/javascript"></script>
 {% endblock %}

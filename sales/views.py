@@ -12,8 +12,8 @@ from functools import wraps
 
 from flaskext.babel import gettext as _
 
-from pyservice.models import MountMend, Employee, Item, Department
-from pyservice.forms import MountMendForm, MountMendFeedbackForm
+from .models import MountMend
+from .forms import MountMendForm, MountMendFeedbackForm
 
 sales = Blueprint('sales', __name__,
                 url_prefix="/sales",
@@ -72,17 +72,17 @@ def order_edit(id):
 
     form = MountMendForm(next=request.args.get('next', None), obj=mountmend)
 
-    form.receiver_id.choices = [(g.id, g.emp_name) for g in
-        Employee.query.filter_by(active=True).order_by('emp_name')]
-    form.department_id.choices = [(g.id, g.dept_name) for g in
-        Department.query.filter_by(active=True).order_by('dept_name')]
+    # form.receiver_id.choices = [(g.id, g.emp_name) for g in
+    #     Employee.query.filter_by(active=True).order_by('emp_name')]
+    # form.department_id.choices = [(g.id, g.dept_name) for g in
+    #     Department.query.filter_by(active=True).order_by('dept_name')]
 
-    form.mend_property_id.choices = [(g.item_id, g.item_name) for g in
-        Item.query.filter_by(active=True, group_id=20).order_by('item_order')]
-    form.user_type_id.choices = [(g.item_id, g.item_name) for g in
-        Item.query.filter_by(active=True, group_id=23).order_by('item_order')]
-    form.source_of_info_id.choices = [(g.item_id, g.item_name) for g in
-        Item.query.filter_by(active=True, group_id=21).order_by('item_order')]
+    # form.mend_property_id.choices = [(g.item_id, g.item_name) for g in
+    #     Item.query.filter_by(active=True, group_id=20).order_by('item_order')]
+    # form.user_type_id.choices = [(g.item_id, g.item_name) for g in
+    #     Item.query.filter_by(active=True, group_id=23).order_by('item_order')]
+    # form.source_of_info_id.choices = [(g.item_id, g.item_name) for g in
+    #     Item.query.filter_by(active=True, group_id=21).order_by('item_order')]
 
     if form.validate_on_submit():
         form.populate_obj(mountmend)
@@ -137,27 +137,27 @@ def feedback_edit(id):
     form = MountMendFeedbackForm(next=request.args.get('next', None),
         obj=mountmend)
 
-    form.receiver_id.choices = [(g.id, g.emp_name) for g in
-        Employee.query.filter_by(active=True).order_by('emp_name')]
-    form.department_id.choices = [(g.id, g.dept_name) for g in
-        Department.query.filter_by(active=True).order_by('dept_name')]
+    # form.receiver_id.choices = [(g.id, g.emp_name) for g in
+    #     Employee.query.filter_by(active=True).order_by('emp_name')]
+    # form.department_id.choices = [(g.id, g.dept_name) for g in
+    #     Department.query.filter_by(active=True).order_by('dept_name')]
 
-    form.mend_property_id.choices = [(g.item_id, g.item_name) for g in
-        Item.query.filter_by(active=True, group_id=20).order_by('item_order')]
-    form.user_type_id.choices = [(g.item_id, g.item_name) for g in
-        Item.query.filter_by(active=True, group_id=23).order_by('item_order')]
-    form.source_of_info_id.choices = [(g.item_id, g.item_name) for g in
-        Item.query.filter_by(active=True, group_id=21).order_by('item_order')]
+    # form.mend_property_id.choices = [(g.item_id, g.item_name) for g in
+    #     Item.query.filter_by(active=True, group_id=20).order_by('item_order')]
+    # form.user_type_id.choices = [(g.item_id, g.item_name) for g in
+    #     Item.query.filter_by(active=True, group_id=23).order_by('item_order')]
+    # form.source_of_info_id.choices = [(g.item_id, g.item_name) for g in
+    #     Item.query.filter_by(active=True, group_id=21).order_by('item_order')]
 
-    form.shou_man_id.choices = [(0, "")]
-    form.shou_man_id.choices.extend([(g.id, g.emp_name) for g in
-        Employee.query.filter_by(active=True).order_by('emp_name')])
-    form.fj_emp_id.choices = [(0, "")]
-    form.fj_emp_id.choices.extend([(g.id, g.emp_name) for g in
-        Employee.query.filter_by(active=True).order_by('emp_name')])
+    # form.shou_man_id.choices = [(0, "")]
+    # form.shou_man_id.choices.extend([(g.id, g.emp_name) for g in
+    #     Employee.query.filter_by(active=True).order_by('emp_name')])
+    # form.fj_emp_id.choices = [(0, "")]
+    # form.fj_emp_id.choices.extend([(g.id, g.emp_name) for g in
+    #     Employee.query.filter_by(active=True).order_by('emp_name')])
 
-    form.deal_type_id.choices = [(g.item_id, g.item_name) for g in
-        Item.query.filter_by(active=True, group_id=22).order_by('item_order')]
+    # form.deal_type_id.choices = [(g.item_id, g.item_name) for g in
+    #     Item.query.filter_by(active=True, group_id=22).order_by('item_order')]
 
     if form.validate_on_submit():
         form.populate_obj(mountmend)

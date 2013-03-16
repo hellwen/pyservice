@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% import 'lib.html' as lib with context %}
+
+{% block body %}
+    <ul class="nav nav-pills">
+        <li>
+            <a href="{{ formadmin.return_url }}">{{ _('List') }}</a>
+        </li>
+        <li class="active">
+            <a href="#">{{ _('View') }}</a>
+        </li>
+        <li>
+            <a href="{{ url_for('.' + formadmin.modelname + '_edit', id=current_id)  }}">{{ _('Edit') }}</a>
+        </li>
+    </ul>
+
+    {% call lib.form_tag() %}
+        {{ lib.render_form_fields(formadmin.form) }}
+    {% endcall %}
+
+{% endblock %}

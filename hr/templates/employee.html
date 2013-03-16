@@ -1,13 +1,7 @@
-{% extends "layout.html" %}
+{% extends "main.html" %}
 {% from "macros/_forms.html" import render_field %}
 
-{%- block sidebar %}
-<div class="sidebar">
-    {% include "hr/_sidebar.html" %}
-</div>
-{%- endblock %}
-
-{%- block content %}
+{%- block body %}
 <div class="content">
     <div id="Employee">
         <form method="POST" action=".">

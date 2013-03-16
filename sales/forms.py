@@ -16,7 +16,6 @@ from flask.ext.babel import gettext, lazy_gettext as _
 from pyservice.extensions import db
 from pyservice.models import User
 
-from .validators import is_username
 
 class MountMendForm(Form):
 

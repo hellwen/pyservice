@@ -11,7 +11,7 @@ from flask import Blueprint, render_template
 frontend = Blueprint("frontend", __name__,
     url_prefix="/",
     template_folder='templates',
-    static_url_path='/static')
+    static_url_path='static')
 
 
 @frontend.route("/", methods=("GET", "POST"))

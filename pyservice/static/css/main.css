@@ -4,21 +4,6 @@ body
     padding-top: 50px;
 }
 
-/*Added by Hellwen*/
-.sidebox {
-    float: left;
-    display: inline;
-    padding-right: 20px;
-    width: 220px;
-}
-
-/*Added by Hellwen*/
-.bodybox {
-    float: right;
-    display: inline;
-    width: 880px;
-}
-
 /* Form customizations */
 form.icon {
     display: inline;

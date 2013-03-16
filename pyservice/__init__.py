@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-#coding=utf-8
-
 """
     __init__.py
     ~~~~~~~~~~~~~
@@ -12,10 +10,9 @@ from flask import Flask, request, flash, redirect, jsonify, url_for, g,\
 
 from flask.ext.babel import Babel, gettext as _
 
-from pyservice.views import frontend
+from pyservice.views import frontend, account
 from hr.views import hr
 from sales.views import sales
-from account.views import account
 from pyservice.extensions import db
 
 DEFAULT_APP_NAME = 'pyservice'
@@ -98,6 +95,6 @@ def configure_errorhandlers(app):
 def configure_blueprints(app):
 
         app.register_blueprint(frontend)
+        # app.register_blueprint(account)
         app.register_blueprint(sales)
         app.register_blueprint(hr)
-        app.register_blueprint(account)

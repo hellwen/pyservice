@@ -1,0 +1,25 @@
+{% extends "main.html" %}
+{% from "macros/_forms.html" import render_field %}
+
+{%- block body %}
+<div class="content">
+    <form method="POST" action=".">
+        {{ form.hidden_tag() }}
+        <table cellspacing="0" class="form-table">
+        <tbody>
+            <tr>
+                {{ render_field(form.dept_name) }}
+                {{ render_field(form.manager) }}
+            </tr>
+            <tr>
+                {{ render_field(form.parent_id) }}
+            </tr>
+            <tr>
+                <th></th>
+                <td>{{ form.submit }}</td>
+            </tr>
+        </tbody>
+        </table>
+    </form>
+</div>
+{%- endblock %}

@@ -1,0 +1,191 @@
+{% macro pager(page, pages, generator) -%}
+{% if pages > 1 %}
+<div class="pagination">
+    <ul>
+    {% set min = page - 3 %}
+    {% set max = page + 3 + 1 %}
+
+    {% if min < 0 %}
+        {% set max = max - min %}
+    {% endif %}
+    {% if max >= pages %}
+        {% set min = min - max + pages %}
+    {% endif %}
+
+    {% if min < 0 %}
+        {% set min = 0 %}
+    {% endif %}
+    {% if max >= pages %}
+        {% set max = pages %}
+    {% endif %}
+
+    {% if min > 0 %}
+    <li>
+        <a href="{{ generator(0) }}">&laquo;</a>
+    </li>
+    {% else %}
+    <li class="disabled">
+        <a href="#">&laquo;</a>
+    </li>
+    {% endif %}
+    {% if page > 0 %}
+    <li>
+        <a href="{{ generator(page-1) }}">&lt;</a>
+    </li>
+    {% else %}
+    <li class="disabled">
+        <a href="#">&lt;</a>
+    </li>
+    {% endif %}
+
+    {% for p in range(min, max) %}
+    {% if page == p %}
+    <li class="active">
+        <a href="#">{{ p + 1 }}</a>
+    </li>
+    {% else %}
+    <li>
+        <a href="{{ generator(p) }}">{{ p + 1 }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if page + 1 < pages %}
+    <li>
+        <a href="{{ generator(page + 1) }}">&gt;</a>
+    </li>
+    {% else %}
+    <li class="disabled">
+        <a href="#">&gt;</a>
+    </li>
+    {% endif %}
+    {% if max < pages %}
+    <li>
+        <a href="{{ generator(pages - 1) }}">&raquo;</a>
+    </li>
+    {% else %}
+    <li class="disabled">
+        <a href="#">&raquo;</a>
+    </li>
+    {% endif %}
+    </ul>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{% macro render_field(field, set_focus=False, readonly=True) %}
+    <div class="control-group {{ 'error' if field.errors }}">
+        <div class="control-label">
+        {{ field.label.text }}
+        </div>
+
+        <div class="controls">
+            <div>
+            {% if set_focus and not readonly %}
+                {{ field(autofocus='autofocus')|safe }}
+            {% elif readonly: %}
+                    {{ field(readonly=readonly)|safe }}
+            {% else %}
+                {{ field()|safe }}
+            {% endif %}
+            </div>
+
+            {% if field.description %}
+                <p class="help-block">{{ field.description }}</p>
+            {% endif %}
+
+            {% if field.errors %}
+                <ul class="input-errors">
+                {% for e in field.errors if e is string %}
+                    <li>{{ e }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_form_fields(form) %}
+    {{ form.hidden_tag() if form.hidden_tag is defined }}
+
+    {% for fields in formadmin.get_fields(None) %}
+    <div class="row-fluid">
+        {% if formadmin.is_tuple(fields) %}
+            {% for field in fields %}
+            <div class="span3">
+                {{ render_field(form.__getitem__(field), not loop.index0 and formadmin.set_focus, formadmin.readonly) }}
+            </div>
+            {% endfor %}
+        {% else %}
+            {{ render_field(form.__getitem__(fields), not loop.index0 and formadmin.set_focus, formadmin.readonly) }}
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <ul class="nav nav-tabs">
+        {% for catagory in formadmin.get_field_categorys() %}
+            {% if loop.index == 1 %}
+            <li class="active">
+            {% else %}
+            <li>
+            {% endif %}
+                <a href="#{{ catagory }}" data-toggle="tab">{{ catagory }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="tab-content">
+    {% for catagory in formadmin.get_field_categorys() %}
+        {% if loop.index == 1 %}
+            <div class="tab-pane active" id="{{ catagory }}">
+        {% else %}
+            <div class="tab-pane" id="{{ catagory }}">
+        {% endif %}
+
+            {% for fields in formadmin.get_fields(catagory) %}
+            <div class="row-fluid">
+                {% if formadmin.is_tuple(fields) %}
+                    {% for field in fields %}
+                    <div class="span3">
+                        {{ render_field(form.__getitem__(field), not loop.index0 and formadmin.set_focus, formadmin.readonly) }}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    {{ render_field(form.__getitem__(fields), not loop.index0 and formadmin.set_focus, formadmin.readonly) }}
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro form_tag() %}
+    <form action="" method="POST" class="form-vertical"{% if formadmin.form.has_file_field %} enctype="multipart/form-data"{% endif %}>
+        <fieldset>
+        {{ caller() }}
+        </fieldset>
+    </form>
+{% endmacro %}
+
+{% macro render_form_buttons(cancel_url, extra=None) %}
+    <div class="control-group">
+      <div class="controls">
+        <input type="submit" class="btn btn-primary btn-large" value="{{ _('Submit') }}" />
+        {% if extra %}
+        {{ extra }}
+        {% endif %}
+        {% if cancel_url %}
+        <a href="{{ cancel_url }}" class="btn btn-large">{{ _('Cancel') }}</a>
+        {% endif %}
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro render_form(form, cancel_url, extra=None) -%}
+    {% call form_tag() %}
+        {{ render_form_fields(form) }}
+        {{ render_form_buttons(cancel_url, extra) }}
+    {% endcall %}
+{% endmacro %}
+

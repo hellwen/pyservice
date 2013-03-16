@@ -12,10 +12,14 @@ from flaskext.babel import gettext as _
 
 from pyservice.extensions import db
 
-from pyservice.models import User, Employee
+from pyservice.models import User
 from pyservice.forms import LoginForm, UserForm
 
-account = Blueprint('account', __name__)
+
+account = Blueprint("account", __name__,
+    url_prefix="/account",
+    template_folder='templates',
+    static_url_path='static')
 
 
 @account.route("/main/", methods=("GET", "POST"))
