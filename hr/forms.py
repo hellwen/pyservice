@@ -41,27 +41,19 @@ class EmployeeForm(Form):
     work_mobile = TextField(_("Work Mobile"))
     office_location = TextField(_("Office Location"))
 
-    # postion
-    # department = SelectField(_("Department"), default=0, coerce=int, validators=[
-    #                       required(message=_("You must choices a department"))])
-    # job = SelectField(_("Job"), default=0, coerce=int, validators=[
-    #                       required(message=_("You must choices a job"))])
-    ## personal info
-
-    GENDER_LIST = [
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other'),
-    ]
-    
-    gender_id = SelectField(_("Gender"), choices=GENDER_LIST, validators=[
+    # # postion
+    department_id = SelectField(_("Department"), default=0, coerce=int,
+        validators=[
+            required(message=_("You must choices a department"))])
+    job_id = SelectField(_("Job"), default=0, coerce=int,
+        validators=[
+            required(message=_("You must choices a job"))])
+    # ## personal info
+    gender_id = SelectField(_("Gender"), coerce=int, validators=[
         required(message=_("You must choices a Gender"))])
-    # marital_id = SelectField(_("Marital Status"), coerce=int, validators=[
-    #                       required(message=_("You must choices a Marital Status"))])
     id_card = TextField(_("ID Card"))
     home_addr = TextField(_("Home Address"))
     date_of_birth = DateField(_("Date of Birth"), validators=[optional()],
         description=_("2013-01-01"))
-    place_of_birth = TextField(_("Place of Birth"))
 
     remark = TextAreaField(_("Reamrk"))

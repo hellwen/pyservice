@@ -10,7 +10,7 @@
             <a href="#">{{ _('View') }}</a>
         </li>
         <li>
-            <a href="{{ url_for('.' + formadmin.modelname + '_edit', id=current_id)  }}">{{ _('Edit') }}</a>
+            <a href="{{ url_for('.' + formadmin.endpoint + '_edit', id=current_id)  }}">{{ _('Edit') }}</a>
         </li>
     </ul>
 

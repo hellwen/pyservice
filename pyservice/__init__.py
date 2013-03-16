@@ -10,10 +10,11 @@ from flask import Flask, request, flash, redirect, jsonify, url_for, g,\
 
 from flask.ext.babel import Babel, gettext as _
 
+from pyservice.extensions import db
 from pyservice.views import frontend, account
 from hr.views import hr
 from sales.views import sales
-from pyservice.extensions import db
+
 
 DEFAULT_APP_NAME = 'pyservice'
 

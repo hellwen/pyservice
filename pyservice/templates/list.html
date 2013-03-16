@@ -11,7 +11,7 @@
             <a href="#">{{ _('List') }} ({{ count }})</a>
         </li>
         <li>
-            <a href="{{ url_for('.' + model + '_create', id=0, url=return_url) }}">{{ _('Create') }}</a>
+            <a href="{{ url_for('.' + formadmin.endpoint + '_create', id=0, url=return_url) }}">{{ _('Create') }}</a>
         </li>
     </ul>
     <table class="table table-striped table-bordered model-list">
@@ -20,16 +20,16 @@
                 {% block list_header scoped %}
                     <th class="span1">&nbsp;</th>
                     {% set column = 0 %}
-                    {% for c in list_columns %}
+                    {% for c in formadmin.list_columns %}
                     <th>
-                        {{ column_labels[c] }}
+                        {{ formadmin.column_labels[c] }}
                     </th>
                     {% set column = column + 1 %}
                     {% endfor %}
                 {% endblock %}
             </tr>
         </thead>
-        {% for row in data %}
+        {% for row in formadmin.data %}
         <tr>
             {% block list_row scoped %}
                 {% if actions %}
@@ -39,10 +39,10 @@
                 {% endif %}
                 <td>
                     {% block list_row_actions scoped %}
-                        <a class="icon" href="{{ url_for('.' + model + '_view', id=row.id, url=return_url) }}">
+                        <a class="icon" href="{{ url_for('.' + formadmin.endpoint + '_view', id=row.id, url=return_url) }}">
                             <i class="icon-share-alt"></i>
                         </a>
-                        <form class="icon" method="POST" action="{{ url_for('.' + model + '_delete', id=row.id, url=return_url) }}">
+                        <form class="icon" method="POST" action="{{ url_for('.' + formadmin.endpoint + '_delete', id=row.id, url=return_url) }}">
                             <button onclick="return confirm('{{ _('You sure you want to delete this item?') }}');">
                                 <i class="icon-remove"></i>
                             </button>
@@ -50,7 +50,7 @@
                     {% endblock %}
                 </td>
 
-                {% for c in list_columns %}
+                {% for c in formadmin.list_columns %}
                     {%- if row[c] %}
                         <td>{{ row[c] }}</td>
                     {%- else %}
