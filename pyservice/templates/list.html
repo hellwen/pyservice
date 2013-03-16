@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends formadmin.blueprint.name + "/main.html" %}
 
 {% block head %}
     <link href="{{ url_for('.static', filename='select2/select2.css') }}" rel="stylesheet">

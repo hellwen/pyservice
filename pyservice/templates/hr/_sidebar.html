@@ -1,0 +1,12 @@
+<div class="sidebox">
+    <ul class="nav nav-list">
+        <li class="active">
+            <a href="{{ url_for('.main', next=request.path) }}">{{ _("Main") }}</a>
+        </li>
+        <li class="nav-header">{{ _("Human Resources") }}</li>
+        <li><a href="{{ url_for('.employee', next=request.path) }}">{{ _("Empolyee") }}</a></li>
+        <li class="nav-header">{{ _("Basic") }}</li>
+        <li><a href="{{ url_for('.department', next=request.path) }}">{{ _("Department") }}</a></li>
+        <li><a href="{{ url_for('.job', next=request.path) }}">{{ _("Job") }}</a></li>
+    </ul>
+</div>

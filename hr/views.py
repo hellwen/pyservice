@@ -1,11 +1,3 @@
-#! /usr/bin/env python
-#coding=utf-8
-"""
-    sales.py
-    ~~~~~~~~~~~~~
-    :license: BSD, see LICENSE for more details.
-"""
-
 from flask import Blueprint, render_template
 from flask.ext.babel import gettext as _
 
@@ -17,13 +9,12 @@ from pyservice.base import FormBase
 
 hr = Blueprint('hr', __name__,
     url_prefix="/hr",
-    template_folder='templates',
     static_folder='static')
 
 
 @hr.route("/main/", methods=("GET", "POST"))
 def main():
-    return render_template("main.html")
+    return render_template("hr/main.html")
 
 
 class JobAdmin(FormBase):
@@ -32,7 +23,7 @@ class JobAdmin(FormBase):
         (None, {'fields': ('job_name', 'description')}),
     ]
     column_labels = dict(job_name=_("Job"), description=_("Description"))
-jobadmin = JobAdmin(db.session, Job, JobForm)
+jobadmin = JobAdmin(hr, db.session, Job, JobForm)
 
 
 @hr.route("/job/", methods=("GET", "POST"))
@@ -67,7 +58,7 @@ class DeptAdmin(FormBase):
     ]
     column_labels = dict(dept_name=_("Department"),
         description=_("Description"))
-deptadmin = DeptAdmin(db.session, Department, DepartmentForm)
+deptadmin = DeptAdmin(hr, db.session, Department, DepartmentForm)
 
 
 @hr.route("/department/", methods=("GET", "POST"))
@@ -116,7 +107,7 @@ class EmployeeAdmin(FormBase):
         form.job_id.choices = [(g.id, g.job_name) for g in
             Job.query.filter_by(active=True).order_by('job_name')]
 
-employeeadmin = EmployeeAdmin(db.session, Employee, EmployeeForm)
+employeeadmin = EmployeeAdmin(hr, db.session, Employee, EmployeeForm)
 
 
 @hr.route("/employee/", methods=("GET", "POST"))

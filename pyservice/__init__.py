@@ -1,18 +1,12 @@
-#!/usr/bin/env python
-"""
-    __init__.py
-    ~~~~~~~~~~~~~
-
-    :license: BSD, see LICENSE for more details.
-"""
 from flask import Flask, request, flash, redirect, jsonify, url_for, g,\
     render_template
 
 from flask.ext.babel import Babel, gettext as _
 
 from pyservice.extensions import db
-from pyservice.views import frontend, account
+from pyservice.views import frontend
 from hr.views import hr
+from bases.views import bases
 from sales.views import sales
 
 
@@ -23,7 +17,6 @@ def create_app(config=None, blueprints=None):
 
     app = Flask(DEFAULT_APP_NAME)
 
-    # config
     if config is not None:
         app.config.from_pyfile(config)
 
@@ -31,7 +24,6 @@ def create_app(config=None, blueprints=None):
     configure_errorhandlers(app)
     configure_i18n(app)
 
-    # register blueprint
     configure_blueprints(app)
 
     return app
@@ -95,7 +87,9 @@ def configure_errorhandlers(app):
 
 def configure_blueprints(app):
 
-        app.register_blueprint(frontend)
-        # app.register_blueprint(account)
-        app.register_blueprint(sales)
-        app.register_blueprint(hr)
+    app.register_blueprint(frontend)
+    # app.register_blueprint(account)
+    app.register_blueprint(sales)
+    app.register_blueprint(hr)
+    app.register_blueprint(bases)
+    # print app.url_map

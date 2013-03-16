@@ -1,0 +1,9 @@
+<div class="sidebox">
+    <ul class="nav nav-list">
+        <li class="active">
+            <a href="{{ url_for('.main', next=request.path) }}">{{ _("Main") }}</a>
+        </li>
+        <li class="nav-header">{{ _("Base Info") }}</li>
+        <li><a href="{{ url_for('.itemgroup', next=request.path) }}">{{ _("Item") }}</a></li>
+    </ul>
+</div>

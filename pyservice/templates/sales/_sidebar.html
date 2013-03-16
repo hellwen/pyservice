@@ -1,0 +1,14 @@
+<div class="sidebox">
+    <ul class="nav nav-list">
+        <li class="active">
+            <a href="{{ url_for('.main', next=request.path) }}">{{ _("Main") }}</a>
+        </li>
+        <li class="nav-header">{{ _("Work Order") }}</li>
+        <li>
+            <a href="{{ url_for('.order') }}">{{ _("Order") }}</a>
+        </li>
+        <li>
+            <a href="{{ url_for('.feedback') }}">{{ _("Feedback") }}</a>
+        </li>
+    </ul>
+</div>

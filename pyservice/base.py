@@ -1,11 +1,3 @@
-#! /usr/bin/env python
-#coding=utf-8
-"""
-    sales.py
-    ~~~~~~~~~~~~~
-    :license: BSD, see LICENSE for more details.
-"""
-
 import logging
 
 from flask import request, redirect, url_for, render_template, flash
@@ -17,11 +9,13 @@ class FormBase(object):
     column_labels = dict()
     readonly = False
     set_focus = True
+    inline_models = None
 
-    def __init__(self, session, model, formclass):
+    def __init__(self, blueprint, session, model, form_class):
+        self.blueprint = blueprint
         self.session = session
         self.model = model
-        self.formclass = formclass
+        self.form_class = form_class
         self.endpoint = model.__name__.lower()
 
     def get_field_categorys(self):
@@ -44,7 +38,7 @@ class FormBase(object):
     def create_form(self, next, obj):
         form = self.get_form()
         if not form:
-            form = self.formclass(next=next, obj=obj)
+            form = self.form_class(next=next, obj=obj)
         self.after_create_form(form)
         return form
 

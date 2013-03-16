@@ -8,17 +8,25 @@
         <table cellspacing="0" class="form-table">
         <tbody>
             <tr>
-                {{ render_field(form.job_name) }}
+                {{ render_field(form.group_id) }}
+                {{ render_field(form.item_id) }}
+                
+
+            </tr>                
+            <tr>
+                {{ render_field(form.item_order) }}
+                {{ render_field(form.item_name) }}
             </tr>
             <tr>
-                {{ render_field(form.description) }}
+                {{ render_field(form.group_name) }}
             </tr>
             <tr>
                 <th></th>
                 <td>{{ form.submit }}</td>
             </tr>
         </tbody>
-        </table>           
+        </table>            
     </form>
 </div>
+
 {%- endblock %}
