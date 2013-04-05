@@ -8,6 +8,7 @@ class ItemGroup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type_code = db.Column(db.String(10), nullable=False)
     group_name = db.Column(db.String(30), nullable=False)
+    items = db.relationship('Item', backref='item+')
     active = db.Column(db.Boolean, default=True)
 
     def __unicode__(self):

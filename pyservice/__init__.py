@@ -3,7 +3,7 @@ from flask import Flask, request, flash, redirect, jsonify, url_for, g,\
 
 from flask.ext.babel import Babel, gettext as _
 
-from pyservice.extensions import db
+from pyservice.extensions import db, admin
 from pyservice.views import frontend
 from hr.views import hr
 from bases.views import bases
@@ -32,6 +32,7 @@ def create_app(config=None, blueprints=None):
 def configure_extensions(app):
 
     db.init_app(app)
+    admin.init_app(app)
 
 
 def configure_i18n(app):

@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template
 from flask.ext.babel import gettext as _
+from flask_admin.contrib import sqlamodel
+from flask_admin.model.form import InlineFormAdmin
 
-from .models import ItemGroup
+from .models import ItemGroup, Item
 from .forms import ItemGroupForm
 
-from pyservice.extensions import db
+from pyservice.extensions import db, admin
 from pyservice.base import FormBase
 
 bases = Blueprint('bases', __name__,
@@ -17,6 +19,20 @@ def main():
     return render_template("bases/main.html")
 
 
+class ItemFormAdmin(InlineFormAdmin):
+    form_columns = ('item_order', 'item_name')
+
+
+class ItemGroupModelView(sqlamodel.ModelView):
+    inline_models = (ItemFormAdmin(Item), )
+    column_list = ('type_code', 'group_name', 'items')
+    # form_columns = ('type_code', 'group_name', 'items')
+
+
+admin.add_view(ItemGroupModelView(ItemGroup, db.session, name='Item',
+    endpoint='itemgroup', category='Base'))
+
+
 class ItemAdmin(FormBase):
     list_columns = ("item_order", "item_name")
     fieldsets = [
@@ -26,9 +42,9 @@ class ItemAdmin(FormBase):
 
 
 class ItemGroupAdmin(FormBase):
-    list_columns = ("type_code", "group_name")
+    list_columns = ("type_code", "group_name", 'items')
     fieldsets = [
-        (None, {'fields': ('type_code', 'group_name')}),
+        (None, {'fields': ('type_code', 'group_name', 'items', 'add_recipient')}),
     ]
     column_labels = dict(type_code=_("Type"), group_name=_("Group Name"))
 

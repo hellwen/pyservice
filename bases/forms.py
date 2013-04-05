@@ -1,5 +1,13 @@
-from flask.ext.wtf import Form, TextField, HiddenField, required
+from flask.ext.wtf import Form, TextField, HiddenField, required,\
+    FormField, FieldList, SubmitField
 from flask.ext.babel import gettext as _
+
+
+class ItemForm(Form):
+    item_order = TextField(_("Item Order"), validators=[
+        required(message=_("You must provide"))])
+    item_name = TextField(_("Item Name"), validators=[
+        required(message=_("You must provide"))])
 
 
 class ItemGroupForm(Form):
@@ -9,12 +17,6 @@ class ItemGroupForm(Form):
         required(message=_("You must provide"))])
     group_name = TextField(_("Group Name"), validators=[
         required(message=_("You must provide"))])
+    items = FieldList(FormField(ItemForm), min_entries=1)
 
-
-class ItemForm(Form):
-    next = HiddenField()
-
-    item_order = TextField(_("Item Order"), validators=[
-        required(message=_("You must provide"))])
-    item_name = TextField(_("Item Name"), validators=[
-        required(message=_("You must provide"))])
+    add_recipient = SubmitField()
